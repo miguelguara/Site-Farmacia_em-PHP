@@ -614,4 +614,118 @@ BEGIN
   END IF;
 END $$;
 
--- Fim do schema
+-- Seeds de exemplo (idempotentes, respeitando relações)
+-- Executar após criação de tabelas e funções/constraints
+
+-- Laboratório
+INSERT INTO laboratorios (nome)
+VALUES ('ACME Pharma')
+ON CONFLICT (nome) DO NOTHING;
+
+-- Classe terapêutica
+INSERT INTO classes_terapeuticas (codigo_classe, nome)
+VALUES (1, 'Analgésicos')
+ON CONFLICT (codigo_classe) DO NOTHING;
+
+-- Fornecedor
+INSERT INTO fornecedores (nome, tipo, contato)
+VALUES ('Fornecedor Saúde', 'compra', 'contato@saude.com')
+ON CONFLICT DO NOTHING;
+
+-- Paciente (CPF válido)
+INSERT INTO pacientes (nome, cpf, telefone, cidade)
+VALUES ('Miguel Silva', '529.982.247-25', '(11) 99999-0000', 'São Paulo')
+ON CONFLICT (cpf) DO NOTHING;
+
+-- Medicamento (usa laboratório e classe acima)
+INSERT INTO medicamentos (
+  codigo, nome, laboratorio_id, classe_terapeutica_id,
+  tarja, forma_retirada, forma_fisica,
+  apresentacao, unidade_base,
+  dosagem_valor, dosagem_unidade,
+  generico, limite_minimo, serial_por_classe
+)
+VALUES (
+  'ANLG-001', 'Paracetamol 500 mg comprimidos',
+  (SELECT id FROM laboratorios WHERE nome = 'ACME Pharma'),
+  (SELECT id FROM classes_terapeuticas WHERE codigo_classe = 1),
+  'sem_tarja', 'MIP', 'solida',
+  'comprimido', 'comprimido',
+  500, 'mg',
+  TRUE, 10, 1
+)
+ON CONFLICT (codigo) DO NOTHING;
+
+-- Lote (validade futura, única por mês)
+INSERT INTO lotes (
+  medicamento_id, data_fabricacao, validade, nome_comercial, observacao
+)
+VALUES (
+  (SELECT id FROM medicamentos WHERE codigo = 'ANLG-001'),
+  CURRENT_DATE - INTERVAL '2 months',
+  CURRENT_DATE + INTERVAL '6 months',
+  'Paracetamol 500 mg',
+  'Lote de exemplo'
+)
+ON CONFLICT (medicamento_id, validade_mes) DO NOTHING;
+
+-- Entrada (10 caixas x 20 comprimidos = 200 base)
+INSERT INTO entradas (
+  fornecedor_id, lote_id, numero_lote_fornecedor,
+  quantidade_informada, unidade, unidades_por_embalagem,
+  estado, observacao
+)
+VALUES (
+  (SELECT id FROM fornecedores WHERE nome = 'Fornecedor Saúde'),
+  (SELECT id FROM lotes WHERE medicamento_id = (SELECT id FROM medicamentos WHERE codigo = 'ANLG-001') ORDER BY id DESC LIMIT 1),
+  'ACME-001',
+  10, 'caixa', 20,
+  'novo', 'Entrada de exemplo'
+)
+ON CONFLICT DO NOTHING;
+
+-- Dispensação (15 comprimidos, sem receita por ser MIP)
+INSERT INTO dispensacoes (
+  responsavel, paciente_id, lote_id,
+  dosagem, nome_comercial,
+  quantidade_informada, unidade,
+  numero_receita
+)
+VALUES (
+  'Farmacêutico',
+  (SELECT id FROM pacientes WHERE cpf = '529.982.247-25'),
+  (SELECT id FROM lotes WHERE medicamento_id = (SELECT id FROM medicamentos WHERE codigo = 'ANLG-001') ORDER BY id DESC LIMIT 1),
+  '500 mg', 'Paracetamol 500 mg',
+  15, 'comprimido',
+  NULL
+)
+ON CONFLICT DO NOTHING;
+
+-- Usuário e papéis (RBAC)
+INSERT INTO usuarios (nome, celular, email, login, senha_hash)
+VALUES ('Administrador', '(11) 90000-0000', 'admin@example.com', 'admin', 'admin123')
+ON CONFLICT (login) DO NOTHING;
+
+INSERT INTO papeis (nome, descricao)
+VALUES
+  ('Administrador', 'Acesso completo'),
+  ('Farmaceutico', 'Operação de estoque e dispensação')
+ON CONFLICT (nome) DO NOTHING;
+
+-- Vincula usuário ao papel Administrador
+INSERT INTO usuarios_papeis (usuario_id, papel_id)
+SELECT u.id, p.id
+FROM usuarios u
+JOIN papeis p ON p.nome = 'Administrador'
+WHERE u.login = 'admin'
+ON CONFLICT DO NOTHING;
+
+-- Concede permissões ao papel Administrador
+INSERT INTO papeis_permissoes (papel_id, permissao_id)
+SELECT p.id, pe.id
+FROM papeis p
+JOIN permissoes pe ON pe.codigo IN ('acesso_sistema','estoque','entradas','saidas','relatorios')
+WHERE p.nome = 'Administrador'
+ON CONFLICT DO NOTHING;
+
+-- ... existing code ...
