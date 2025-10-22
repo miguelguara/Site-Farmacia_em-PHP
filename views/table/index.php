@@ -4,9 +4,11 @@ $pk = $pk ?? null;
 $totalPages = max(1, (int)ceil($total / $perPage));
 ?>
 <h2>Tabela: <?php echo htmlspecialchars($table); ?></h2>
+<?php if (empty($isView) || $isView === false): ?>
 <p>
   <a class="btn btn-primary" href="?controller=table&action=create&name=<?php echo urlencode($table); ?>">Novo</a>
 </p>
+<?php endif; ?>
 <table class="table">
   <thead>
     <tr>

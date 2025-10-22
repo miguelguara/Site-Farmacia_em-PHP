@@ -20,13 +20,15 @@ class TableController {
         $total = $model->count();
         $columns = array_map(fn($c) => $c['column_name'], $model->columns());
         $pk = $model->getPrimaryKey();
-        $this->render('table/index', compact('name', 'rows', 'columns', 'page', 'perPage', 'total', 'pk'));
+        $isView = $model->isView();
+        $this->render('table/index', compact('name', 'rows', 'columns', 'page', 'perPage', 'total', 'pk', 'isView'));
     }
 
     public function create() {
         $name = $_GET['name'] ?? null;
         if (!$name) { http_response_code(400); echo 'Falta o nome da tabela'; return; }
         $model = new TableModel($name);
+        if ($model->isView()) { http_response_code(405); echo 'Esta visão é somente leitura.'; return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $model->create($_POST);
             header('Location: ?controller=table&action=index&name=' . urlencode($name));
@@ -41,6 +43,7 @@ class TableController {
         $id   = $_GET['id'] ?? null;
         if (!$name || $id === null) { http_response_code(400); echo 'Parâmetros insuficientes'; return; }
         $model = new TableModel($name);
+        if ($model->isView()) { http_response_code(405); echo 'Esta visão é somente leitura.'; return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $model->update($id, $_POST);
             header('Location: ?controller=table&action=index&name=' . urlencode($name));
@@ -57,6 +60,7 @@ class TableController {
         $id   = $_GET['id'] ?? null;
         if (!$name || $id === null) { http_response_code(400); echo 'Parâmetros insuficientes'; return; }
         $model = new TableModel($name);
+        if ($model->isView()) { http_response_code(405); echo 'Esta visão é somente leitura.'; return; }
         $model->delete($id);
         header('Location: ?controller=table&action=index&name=' . urlencode($name));
     }

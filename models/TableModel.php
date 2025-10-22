@@ -7,16 +7,34 @@ class TableModel {
     private ?string $schema;
     private string $table;
     private ?string $pk;
+    private bool $view;
 
     public function __construct(string $table) {
         $this->pdo = Database::getConnection();
         $this->driver = Database::driver();
         $this->schema = Database::schema();
         $this->table = $table;
+        $this->view = $this->detectIsView();
         $this->pk = $this->detectPrimaryKey();
     }
 
     public function getPrimaryKey(): ?string { return $this->pk; }
+    public function isView(): bool { return $this->view; }
+
+    private function detectIsView(): bool {
+        if ($this->driver === 'pgsql') {
+            $sql = "SELECT table_type FROM information_schema.tables WHERE table_schema = :schema AND table_name = :table LIMIT 1";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['schema' => $this->schema, 'table' => $this->table]);
+        } else {
+            $sql = "SELECT TABLE_TYPE AS table_type FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = :table LIMIT 1";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['table' => $this->table]);
+        }
+        $row = $stmt->fetch();
+        $type = $row ? strtolower($row['table_type'] ?? $row['TABLE_TYPE'] ?? '') : '';
+        return $type === 'view';
+    }
 
     private function detectPrimaryKey(): ?string {
         if ($this->driver === 'pgsql') {
@@ -112,6 +130,7 @@ class TableModel {
     }
 
     public function create(array $data): bool {
+        if ($this->isView()) return false;
         $cols = $this->columns();
         $insertCols = [];
         $params = [];
@@ -132,6 +151,7 @@ class TableModel {
     }
 
     public function update($id, array $data): bool {
+        if ($this->isView()) return false;
         if (!$this->pk) return false;
         $cols = $this->columns();
         $sets = [];
@@ -153,6 +173,7 @@ class TableModel {
     }
 
     public function delete($id): bool {
+        if ($this->isView()) return false;
         if (!$this->pk) return false;
         $sql = "DELETE FROM " . $this->quotedTable() . " WHERE " . $this->quoteIdent($this->pk) . " = :id";
         $stmt = $this->pdo->prepare($sql);

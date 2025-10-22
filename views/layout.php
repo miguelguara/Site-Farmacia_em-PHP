@@ -31,10 +31,15 @@ $assetHref = ($base === '' || $base === '/')
         <li><a href="?controller=table&action=index&name=lotes">Lotes</a></li>
         <li><a href="?controller=table&action=index&name=entradas">Entradas</a></li>
         <li><a href="?controller=table&action=index&name=dispensacoes">Dispensações</a></li>
-        <li><a href="?controller=table&action=index&name=laboratorio">Laboratório</a></li>
+        <li><a href="?controller=table&action=index&name=laboratorios">Laboratórios</a></li>
+        <li><a href="?controller=table&action=index&name=classes_terapeuticas">Classes terapêuticas</a></li>
+        <li><a href="?controller=table&action=index&name=fornecedores">Fornecedores</a></li>
         <li><a href="?controller=table&action=index&name=pacientes">Pacientes</a></li>
-        <li><a href="?controller=table&action=index&name=alertas">Alertas</a></li>
-        <li><a href="?controller=table&action=index&name=relatorios">Relatórios</a></li>
+        <li><a href="?controller=table&action=index&name=vw_estoque_por_lote">Estoque por lote</a></li>
+        <li><a href="?controller=table&action=index&name=vw_estoque_por_medicamento">Estoque por medicamento</a></li>
+        <li><a href="?controller=table&action=index&name=vw_alerta_validade_mes_atual">Alertas mês atual</a></li>
+        <li><a href="?controller=table&action=index&name=vw_alerta_validade">Alertas de validade</a></li>
+        <li><a href="?controller=table&action=index&name=vw_alerta_estoque_baixo">Alertas de estoque</a></li>
         <li><a href="?controller=table&action=index&name=usuarios">Usuários</a></li>
       </ul>
     </div>
