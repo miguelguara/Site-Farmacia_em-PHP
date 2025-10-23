@@ -79,12 +79,6 @@ $schema = Database::schema();
       <p>Gerenciar cadastro de pacientes</p>
       <a class="btn btn-outline" href="?controller=table&action=index&name=pacientes">Acessar</a>
     </div>
-    <div class="tile">
-      <div class="icon">👥</div>
-      <h3>Pacientes</h3>
-      <p>Gerenciar cadastro de pacientes</p>
-      <a class="btn btn-outline" href="?controller=table&action=index&name=pacientes">Acessar</a>
-    </div>
   </div>
 
   <div class="mt-2">
