@@ -21,14 +21,16 @@ function inputType($dataType) {
       if ($isAuto) continue;
       $type = inputType($col['data_type']);
       $isFk = isset($fkOptions) && isset($fkOptions[$name]);
+      $isEnum = isset($enumOptions) && isset($enumOptions[$name]);
       $nullable = strtolower($col['is_nullable'] ?? '') === 'yes';
   ?>
   <div class="row">
     <label><?php echo htmlspecialchars($name); ?></label>
-    <?php if ($isFk): ?>
+    <?php if ($isFk || $isEnum): ?>
+      <?php $options = $isFk ? ($fkOptions[$name] ?? []) : ($enumOptions[$name] ?? []); ?>
       <select name="<?php echo htmlspecialchars($name); ?>" <?php echo $nullable ? '' : 'required'; ?>>
         <option value="" <?php echo $nullable ? '' : 'selected'; ?>>— selecione —</option>
-        <?php foreach (($fkOptions[$name] ?? []) as $opt): ?>
+        <?php foreach ($options as $opt): ?>
           <option value="<?php echo htmlspecialchars((string)$opt['value']); ?>">
             <?php echo htmlspecialchars($opt['label']); ?>
           </option>

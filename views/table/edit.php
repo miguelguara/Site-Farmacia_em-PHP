@@ -21,14 +21,16 @@ $pkName = $pk ?? null;
       $val = $row[$name] ?? '';
       $valEsc = htmlspecialchars((string)$val);
       $isFk = isset($fkOptions) && isset($fkOptions[$name]);
+      $isEnum = isset($enumOptions) && isset($enumOptions[$name]);
       $nullable = strtolower($col['is_nullable'] ?? '') === 'yes';
   ?>
   <div class="row">
     <label><?php echo htmlspecialchars($name); ?></label>
-    <?php if ($isFk): ?>
+    <?php if ($isFk || $isEnum): ?>
+      <?php $options = $isFk ? ($fkOptions[$name] ?? []) : ($enumOptions[$name] ?? []); ?>
       <select name="<?php echo htmlspecialchars($name); ?>">
         <?php if ($nullable): ?><option value="">— selecione —</option><?php endif; ?>
-        <?php foreach (($fkOptions[$name] ?? []) as $opt): ?>
+        <?php foreach ($options as $opt): ?>
           <?php $selected = ((string)$opt['value'] === (string)$val) ? 'selected' : ''; ?>
           <option value="<?php echo htmlspecialchars((string)$opt['value']); ?>" <?php echo $selected; ?>>
             <?php echo htmlspecialchars($opt['label']); ?>

@@ -67,6 +67,32 @@ class TableController {
         return $result;
     }
 
+    private function enumOptionsForUdt(string $udt): array {
+        if (Database::driver() !== 'pgsql') return [];
+        $pdo = Database::getConnection();
+        $sql = "SELECT e.enumlabel FROM pg_type t JOIN pg_enum e ON e.enumtypid = t.oid WHERE t.typname = :udt ORDER BY e.enumsortorder";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['udt' => $udt]);
+        $rows = $stmt->fetchAll();
+        return array_map(fn($r) => (string)$r['enumlabel'], $rows);
+    }
+
+    private function buildEnumOptions(array $cols): array {
+        $result = [];
+        foreach ($cols as $col) {
+            $name = $col['column_name'];
+            $dataType = strtolower($col['data_type'] ?? '');
+            $udt = $col['udt_name'] ?? null;
+            if (Database::driver() === 'pgsql' && $dataType === 'user-defined' && $udt) {
+                $labels = $this->enumOptionsForUdt($udt);
+                if ($labels) {
+                    $result[$name] = array_map(fn($label) => ['value' => $label, 'label' => $label], $labels);
+                }
+            }
+        }
+        return $result;
+    }
+
     public function index() {
         $name = $_GET['name'] ?? null;
         if (!$name) { http_response_code(400); echo 'Falta o nome da tabela'; return; }
@@ -94,7 +120,8 @@ class TableController {
         }
         $cols = $model->columns();
         $fkOptions = $this->buildFkOptions($cols);
-        $this->render('table/create', ['table' => $name, 'cols' => $cols, 'fkOptions' => $fkOptions]);
+        $enumOptions = $this->buildEnumOptions($cols);
+        $this->render('table/create', ['table' => $name, 'cols' => $cols, 'fkOptions' => $fkOptions, 'enumOptions' => $enumOptions]);
     }
 
     public function edit() {
@@ -112,7 +139,8 @@ class TableController {
         $cols = $model->columns();
         $pk = $model->getPrimaryKey();
         $fkOptions = $this->buildFkOptions($cols);
-        $this->render('table/edit', ['table' => $name, 'row' => $row, 'cols' => $cols, 'pk' => $pk, 'fkOptions' => $fkOptions]);
+        $enumOptions = $this->buildEnumOptions($cols);
+        $this->render('table/edit', ['table' => $name, 'row' => $row, 'cols' => $cols, 'pk' => $pk, 'fkOptions' => $fkOptions, 'enumOptions' => $enumOptions]);
     }
 
     public function delete() {

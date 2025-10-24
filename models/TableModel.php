@@ -66,18 +66,11 @@ class TableModel {
 
     public function columns(): array {
         if ($this->driver === 'pgsql') {
-            $sql = "SELECT column_name, data_type, is_nullable, column_default
-                    FROM information_schema.columns
-                    WHERE table_schema = :schema AND table_name = :table
-                    ORDER BY ordinal_position";
+            $sql = "SELECT column_name, data_type, is_nullable, column_default, udt_name\n                    FROM information_schema.columns\n                    WHERE table_schema = :schema AND table_name = :table\n                    ORDER BY ordinal_position";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(['schema' => $this->schema, 'table' => $this->table]);
         } else {
-            $sql = "SELECT COLUMN_NAME as column_name, DATA_TYPE as data_type,
-                           IS_NULLABLE as is_nullable, COLUMN_DEFAULT as column_default, EXTRA
-                    FROM information_schema.columns
-                    WHERE table_schema = DATABASE() AND table_name = :table
-                    ORDER BY ORDINAL_POSITION";
+            $sql = "SELECT COLUMN_NAME as column_name, DATA_TYPE as data_type,\n                           IS_NULLABLE as is_nullable, COLUMN_DEFAULT as column_default, EXTRA\n                    FROM information_schema.columns\n                    WHERE table_schema = DATABASE() AND table_name = :table\n                    ORDER BY ORDINAL_POSITION";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(['table' => $this->table]);
         }
