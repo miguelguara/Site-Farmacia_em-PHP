@@ -31,8 +31,10 @@ $assetHref = ($base === '' || $base === '/')
     <div class="menu card">
       <ul>
         <li><a class="active" href="?">Início</a></li>
-        <?php $loginStr = strtolower($_SESSION['user']['login'] ?? ''); $isAtt = strpos($loginStr, 'atendente') !== false; ?>
-        <?php if ($isAtt): ?>
+        <?php $isLogged = isset($_SESSION['user']); $loginStr = strtolower($_SESSION['user']['login'] ?? ''); $isAtt = strpos($loginStr, 'atendente') !== false; ?>
+        <?php if (!$isLogged): ?>
+          <!-- Antes do login, apenas Início visível -->
+        <?php elseif ($isAtt): ?>
           <li><a href="?controller=table&action=index&name=dispensacoes">Dispensações</a></li>
         <?php else: ?>
           <li><a href="?controller=table&action=index&name=medicamentos">Medicamentos</a></li>
