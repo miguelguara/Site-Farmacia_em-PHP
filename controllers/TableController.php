@@ -40,7 +40,7 @@ class TableController {
     private function optionsForTable(string $table): array {
         $m = new TableModel($table);
         $labelCol = $this->pickLabelColumn($m);
-        $rows = $m->all(200, 0);
+        $rows = $m->all(1000, 0);
         $opts = [];
         foreach ($rows as $r) {
             $id = $r['id'] ?? null;
@@ -49,6 +49,14 @@ class TableController {
             $opts[] = ['value' => $id, 'label' => $label];
         }
         return $opts;
+    }
+
+    private function optionsAssocForTable(string $table): array {
+        $assoc = [];
+        foreach ($this->optionsForTable($table) as $opt) {
+            $assoc[(string)$opt['value']] = $opt['label'];
+        }
+        return $assoc;
     }
 
     private function buildFkOptions(array $cols): array {
@@ -93,6 +101,22 @@ class TableController {
         return $result;
     }
 
+    private function buildFkLabelMaps(array $cols): array {
+        $maps = [];
+        foreach ($cols as $col) {
+            $name = $col['column_name'];
+            $target = $this->guessFkTargetTable($name);
+            if ($target) {
+                try {
+                    $maps[$name] = $this->optionsAssocForTable($target);
+                } catch (\Throwable $e) {
+                    // ignora
+                }
+            }
+        }
+        return $maps;
+    }
+
     public function index() {
         $name = $_GET['name'] ?? null;
         if (!$name) { http_response_code(400); echo 'Falta o nome da tabela'; return; }
@@ -102,10 +126,12 @@ class TableController {
         $offset = ($page - 1) * $perPage;
         $rows = $model->all($perPage, $offset);
         $total = $model->count();
-        $columns = array_map(fn($c) => $c['column_name'], $model->columns());
+        $cols = $model->columns();
+        $columns = array_map(fn($c) => $c['column_name'], $cols);
         $pk = $model->getPrimaryKey();
         $isView = $model->isView();
-        $this->render('table/index', compact('name', 'rows', 'columns', 'page', 'perPage', 'total', 'pk', 'isView'));
+        $fkLabelMaps = $this->buildFkLabelMaps($cols);
+        $this->render('table/index', compact('name', 'rows', 'columns', 'page', 'perPage', 'total', 'pk', 'isView', 'fkLabelMaps'));
     }
 
     public function create() {

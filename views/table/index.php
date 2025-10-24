@@ -22,7 +22,18 @@ $totalPages = max(1, (int)ceil($total / $perPage));
     <?php foreach ($rows as $row): ?>
       <tr>
         <?php foreach ($columns as $c): ?>
-          <td><?php echo htmlspecialchars((string)($row[$c] ?? '')); ?></td>
+          <?php
+            $val = $row[$c] ?? '';
+            $labelMaps = $fkLabelMaps ?? [];
+            $display = $val;
+            if (isset($labelMaps[$c])) {
+              $key = (string)$val;
+              if ($key !== '' && isset($labelMaps[$c][$key])) {
+                $display = $labelMaps[$c][$key];
+              }
+            }
+          ?>
+          <td><?php echo htmlspecialchars((string)$display); ?></td>
         <?php endforeach; ?>
         <td class="actions">
           <?php $id = $pk ? ($row[$pk] ?? null) : null; ?>
