@@ -706,6 +706,11 @@ INSERT INTO usuarios (nome, celular, email, login, senha_hash)
 VALUES ('Administrador', '(11) 90000-0000', 'admin@example.com', 'admin', 'admin123')
 ON CONFLICT (login) DO NOTHING;
 
+-- Usuário Miguel
+INSERT INTO usuarios (nome, celular, email, login, senha_hash)
+VALUES ('Miguel', NULL, 'miguel@gmail.com', 'miguel', 'miguel123')
+ON CONFLICT (login) DO NOTHING;
+
 INSERT INTO papeis (nome, descricao)
 VALUES
   ('Administrador', 'Acesso completo'),

@@ -36,6 +36,12 @@ function inputType($dataType) {
           </option>
         <?php endforeach; ?>
       </select>
+    <?php elseif ($table === 'usuarios' && $name === 'login'): ?>
+      <div class="radio-group">
+        <label><input type="radio" name="login" value="admin" required> admin</label>
+        <label><input type="radio" name="login" value="farma" required> farma</label>
+        <label><input type="radio" name="login" value="atendente" required> atendente</label>
+      </div>
     <?php elseif ($type === 'textarea'): ?>
       <textarea name="<?php echo htmlspecialchars($name); ?>"></textarea>
     <?php elseif ($type === 'checkbox'): ?>

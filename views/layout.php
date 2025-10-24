@@ -17,8 +17,12 @@ $assetHref = ($base === '' || $base === '/')
     <div class="container" style="margin:0 auto;">
       <span class="brand">Farmacia beneficente</span>
       <div class="right">
-        <span>Olá, Miguel</span>
-        <a class="btn btn-outline" href="#">Sair</a>
+        <?php if (isset($_SESSION['user'])): ?>
+          <span>Olá, <?php echo htmlspecialchars($_SESSION['user']['nome']); ?></span>
+          <a class="btn btn-outline" href="?controller=auth&action=logout">Sair</a>
+        <?php else: ?>
+          <a class="btn btn-outline" href="?controller=auth&action=login">Entrar</a>
+        <?php endif; ?>
       </div>
     </div>
   </header>
@@ -27,20 +31,25 @@ $assetHref = ($base === '' || $base === '/')
     <div class="menu card">
       <ul>
         <li><a class="active" href="?">Início</a></li>
-        <li><a href="?controller=table&action=index&name=medicamentos">Medicamentos</a></li>
-        <li><a href="?controller=table&action=index&name=lotes">Lotes</a></li>
-        <li><a href="?controller=table&action=index&name=entradas">Entradas</a></li>
-        <li><a href="?controller=table&action=index&name=dispensacoes">Dispensações</a></li>
-        <li><a href="?controller=table&action=index&name=laboratorios">Laboratórios</a></li>
-        <li><a href="?controller=table&action=index&name=classes_terapeuticas">Classes terapêuticas</a></li>
-        <li><a href="?controller=table&action=index&name=fornecedores">Fornecedores</a></li>
-        <li><a href="?controller=table&action=index&name=pacientes">Pacientes</a></li>
-        <li><a href="?controller=table&action=index&name=vw_estoque_por_lote">Estoque por lote</a></li>
-        <li><a href="?controller=table&action=index&name=vw_estoque_por_medicamento">Estoque por medicamento</a></li>
-        <li><a href="?controller=table&action=index&name=vw_alerta_validade_mes_atual">Alertas mês atual</a></li>
-        <li><a href="?controller=table&action=index&name=vw_alerta_validade">Alertas de validade</a></li>
-        <li><a href="?controller=table&action=index&name=vw_alerta_estoque_baixo">Alertas de estoque</a></li>
-        <li><a href="?controller=table&action=index&name=usuarios">Usuários</a></li>
+        <?php $loginStr = strtolower($_SESSION['user']['login'] ?? ''); $isAtt = strpos($loginStr, 'atendente') !== false; ?>
+        <?php if ($isAtt): ?>
+          <li><a href="?controller=table&action=index&name=dispensacoes">Dispensações</a></li>
+        <?php else: ?>
+          <li><a href="?controller=table&action=index&name=medicamentos">Medicamentos</a></li>
+          <li><a href="?controller=table&action=index&name=lotes">Lotes</a></li>
+          <li><a href="?controller=table&action=index&name=entradas">Entradas</a></li>
+          <li><a href="?controller=table&action=index&name=dispensacoes">Dispensações</a></li>
+          <li><a href="?controller=table&action=index&name=laboratorios">Laboratórios</a></li>
+          <li><a href="?controller=table&action=index&name=classes_terapeuticas">Classes terapêuticas</a></li>
+          <li><a href="?controller=table&action=index&name=fornecedores">Fornecedores</a></li>
+          <li><a href="?controller=table&action=index&name=pacientes">Pacientes</a></li>
+          <li><a href="?controller=table&action=index&name=vw_estoque_por_lote">Estoque por lote</a></li>
+          <li><a href="?controller=table&action=index&name=vw_estoque_por_medicamento">Estoque por medicamento</a></li>
+          <li><a href="?controller=table&action=index&name=vw_alerta_validade_mes_atual">Alertas mês atual</a></li>
+          <li><a href="?controller=table&action=index&name=vw_alerta_validade">Alertas de validade</a></li>
+          <li><a href="?controller=table&action=index&name=vw_alerta_estoque_baixo">Alertas de estoque</a></li>
+          <li><a href="?controller=table&action=index&name=usuarios">Usuários</a></li>
+        <?php endif; ?>
       </ul>
     </div>
   </div>

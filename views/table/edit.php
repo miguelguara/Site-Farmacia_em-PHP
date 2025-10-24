@@ -37,6 +37,12 @@ $pkName = $pk ?? null;
           </option>
         <?php endforeach; ?>
       </select>
+    <?php elseif ($table === 'usuarios' && $name === 'login'): ?>
+      <div class="radio-group">
+        <label><input type="radio" name="login" value="admin" <?php echo ($val === 'admin' ? 'checked' : ''); ?>> admin</label>
+        <label><input type="radio" name="login" value="farma" <?php echo ($val === 'farma' ? 'checked' : ''); ?>> farma</label>
+        <label><input type="radio" name="login" value="atendente" <?php echo ($val === 'atendente' ? 'checked' : ''); ?>> atendente</label>
+      </div>
     <?php elseif ($type === 'textarea'): ?>
       <textarea name="<?php echo htmlspecialchars($name); ?>"><?php echo $valEsc; ?></textarea>
     <?php elseif ($type === 'checkbox'): ?>

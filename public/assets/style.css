@@ -61,6 +61,10 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: #1f29
 .form label { display: block; font-weight: 600; margin-bottom: 6px; }
 .form input, .form textarea, .form select { padding: 10px 12px; width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; }
 .form button { margin-top: 6px; }
+/* Align radios tightly with labels in radio-group */
+.radio-group { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.radio-group label { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-weight: 600; }
+.radio-group input[type="radio"] { margin: 0; }
 
 /* Status */
 .error { color: #b00020; margin: 12px 0; }
