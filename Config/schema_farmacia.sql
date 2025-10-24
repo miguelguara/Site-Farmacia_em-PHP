@@ -708,14 +708,9 @@ ON CONFLICT (login) DO NOTHING;
 
 -- Usuário Miguel
 INSERT INTO usuarios (nome, celular, email, login, senha_hash)
-VALUES ('Miguel', NULL, 'miguel@gmail.com', 'miguel', 'miguel123')
+VALUES ('Miguel', NULL, 'miguel@gmail.com', 'admin', 'miguel123')
 ON CONFLICT (login) DO NOTHING;
 
-INSERT INTO papeis (nome, descricao)
-VALUES
-  ('Administrador', 'Acesso completo'),
-  ('Farmaceutico', 'Operação de estoque e dispensação')
-ON CONFLICT (nome) DO NOTHING;
 
 -- Vincula usuário ao papel Administrador
 INSERT INTO usuarios_papeis (usuario_id, papel_id)
