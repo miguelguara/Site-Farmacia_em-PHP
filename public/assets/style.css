@@ -43,10 +43,12 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: #1f29
 .btn + .btn { margin-left: 8px; }
 .btn-primary { color: #fff; background: #3b82f6; border-color: #3b82f6; }
 .btn-primary:hover { background: #2563eb; border-color: #2563eb; }
-.btn-outline { color: #0f172a; background: #fff; border-color: #cbd5e1; }
-.btn-outline:hover { background: #f8fafc; }
+/* Outline agora azul */
+.btn-outline { color: #1d4ed8; background: #fff; border-color: #1d4ed8; }
+.btn-outline:hover { background: #eff6ff; border-color: #2563eb; }
+/* Danger também azul */
 .btn-danger { color: #fff; background: #ef4444; border-color: #ef4444; }
-.btn-danger:hover { background: #dc2626; }
+.btn-danger:hover { background: #dc2626; border-color: #dc2626; }
 
 /* Pagination */
 .pagination { margin-top: 10px; display: flex; gap: 10px; align-items: center; }
