@@ -9,6 +9,64 @@ class TableController {
         require $layout;
     }
 
+    private function guessFkTargetTable(string $colName): ?string {
+        // Mapeamento explícito para cobrir casos comuns
+        $map = [
+            'laboratorio_id' => 'laboratorios',
+            'classe_terapeutica_id' => 'classes_terapeuticas',
+            'medicamento_id' => 'medicamentos',
+            'fornecedor_id' => 'fornecedores',
+            'paciente_id' => 'pacientes',
+            'lote_id' => 'lotes',
+            'usuario_id' => 'usuarios',
+        ];
+        if (isset($map[$colName])) return $map[$colName];
+        // Heurística simples: remove _id e pluraliza com 's'
+        if (str_ends_with($colName, '_id')) {
+            $base = substr($colName, 0, -3);
+            return $base . 's';
+        }
+        return null;
+    }
+
+    private function pickLabelColumn(TableModel $model): string {
+        $cols = array_map(fn($c) => strtolower($c['column_name']), $model->columns());
+        foreach (['nome','descricao','codigo','label','titulo'] as $pref) {
+            if (in_array($pref, $cols, true)) return $pref;
+        }
+        return in_array('id', $cols, true) ? 'id' : ($cols[0] ?? 'id');
+    }
+
+    private function optionsForTable(string $table): array {
+        $m = new TableModel($table);
+        $labelCol = $this->pickLabelColumn($m);
+        $rows = $m->all(200, 0);
+        $opts = [];
+        foreach ($rows as $r) {
+            $id = $r['id'] ?? null;
+            if ($id === null) continue;
+            $label = (string)($r[$labelCol] ?? ('#' . $id));
+            $opts[] = ['value' => $id, 'label' => $label];
+        }
+        return $opts;
+    }
+
+    private function buildFkOptions(array $cols): array {
+        $result = [];
+        foreach ($cols as $col) {
+            $name = $col['column_name'];
+            $target = $this->guessFkTargetTable($name);
+            if ($target) {
+                try {
+                    $result[$name] = $this->optionsForTable($target);
+                } catch (\Throwable $e) {
+                    // Silencia em caso de tabela inexistente
+                }
+            }
+        }
+        return $result;
+    }
+
     public function index() {
         $name = $_GET['name'] ?? null;
         if (!$name) { http_response_code(400); echo 'Falta o nome da tabela'; return; }
@@ -35,7 +93,8 @@ class TableController {
             return;
         }
         $cols = $model->columns();
-        $this->render('table/create', ['table' => $name, 'cols' => $cols]);
+        $fkOptions = $this->buildFkOptions($cols);
+        $this->render('table/create', ['table' => $name, 'cols' => $cols, 'fkOptions' => $fkOptions]);
     }
 
     public function edit() {
@@ -52,7 +111,8 @@ class TableController {
         $row = $model->find($id);
         $cols = $model->columns();
         $pk = $model->getPrimaryKey();
-        $this->render('table/edit', ['table' => $name, 'row' => $row, 'cols' => $cols, 'pk' => $pk]);
+        $fkOptions = $this->buildFkOptions($cols);
+        $this->render('table/edit', ['table' => $name, 'row' => $row, 'cols' => $cols, 'pk' => $pk, 'fkOptions' => $fkOptions]);
     }
 
     public function delete() {

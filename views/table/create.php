@@ -20,10 +20,21 @@ function inputType($dataType) {
         : (isset($col['EXTRA']) && str_contains(strtolower($col['EXTRA']), 'auto_increment'));
       if ($isAuto) continue;
       $type = inputType($col['data_type']);
+      $isFk = isset($fkOptions) && isset($fkOptions[$name]);
+      $nullable = strtolower($col['is_nullable'] ?? '') === 'yes';
   ?>
   <div class="row">
     <label><?php echo htmlspecialchars($name); ?></label>
-    <?php if ($type === 'textarea'): ?>
+    <?php if ($isFk): ?>
+      <select name="<?php echo htmlspecialchars($name); ?>" <?php echo $nullable ? '' : 'required'; ?>>
+        <option value="" <?php echo $nullable ? '' : 'selected'; ?>>— selecione —</option>
+        <?php foreach (($fkOptions[$name] ?? []) as $opt): ?>
+          <option value="<?php echo htmlspecialchars((string)$opt['value']); ?>">
+            <?php echo htmlspecialchars($opt['label']); ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+    <?php elseif ($type === 'textarea'): ?>
       <textarea name="<?php echo htmlspecialchars($name); ?>"></textarea>
     <?php elseif ($type === 'checkbox'): ?>
       <input type="checkbox" name="<?php echo htmlspecialchars($name); ?>" value="1">

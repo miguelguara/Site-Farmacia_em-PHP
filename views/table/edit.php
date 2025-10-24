@@ -20,10 +20,22 @@ $pkName = $pk ?? null;
       $type = inputType($col['data_type']);
       $val = $row[$name] ?? '';
       $valEsc = htmlspecialchars((string)$val);
+      $isFk = isset($fkOptions) && isset($fkOptions[$name]);
+      $nullable = strtolower($col['is_nullable'] ?? '') === 'yes';
   ?>
   <div class="row">
     <label><?php echo htmlspecialchars($name); ?></label>
-    <?php if ($type === 'textarea'): ?>
+    <?php if ($isFk): ?>
+      <select name="<?php echo htmlspecialchars($name); ?>">
+        <?php if ($nullable): ?><option value="">— selecione —</option><?php endif; ?>
+        <?php foreach (($fkOptions[$name] ?? []) as $opt): ?>
+          <?php $selected = ((string)$opt['value'] === (string)$val) ? 'selected' : ''; ?>
+          <option value="<?php echo htmlspecialchars((string)$opt['value']); ?>" <?php echo $selected; ?>>
+            <?php echo htmlspecialchars($opt['label']); ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+    <?php elseif ($type === 'textarea'): ?>
       <textarea name="<?php echo htmlspecialchars($name); ?>"><?php echo $valEsc; ?></textarea>
     <?php elseif ($type === 'checkbox'): ?>
       <input type="checkbox" name="<?php echo htmlspecialchars($name); ?>" value="1" <?php echo ($val ? 'checked' : ''); ?>>
