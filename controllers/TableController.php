@@ -29,6 +29,30 @@ class TableController {
         return null;
     }
 
+    private function isAutoColumn(array $col): bool {
+        if (Database::driver() === 'pgsql') {
+            return (!empty($col['column_default']) && str_contains((string)$col['column_default'], 'nextval('));
+        }
+        $extra = strtolower((string)($col['EXTRA'] ?? ''));
+        return str_contains($extra, 'auto_increment');
+    }
+
+    private function requiredColumns(array $cols, ?string $pkName): array {
+        $required = [];
+        foreach ($cols as $col) {
+            $name = $col['column_name'];
+            if ($pkName && $name === $pkName && $this->isAutoColumn($col)) {
+                continue;
+            }
+            $isNullable = strtolower((string)($col['is_nullable'] ?? '')) === 'yes';
+            $hasDefault = isset($col['column_default']) && $col['column_default'] !== '' && $col['column_default'] !== null;
+            if (!$isNullable && !$hasDefault) {
+                $required[] = $name;
+            }
+        }
+        return $required;
+    }
+
     private function pickLabelColumn(TableModel $model): string {
         $cols = array_map(fn($c) => strtolower($c['column_name']), $model->columns());
         foreach (['nome','descricao','codigo','label','titulo'] as $pref) {
@@ -140,9 +164,33 @@ class TableController {
         $model = new TableModel($name);
         if ($model->isView()) { http_response_code(405); echo 'Esta visão é somente leitura.'; return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $model->create($_POST);
-            header('Location: ?controller=table&action=index&name=' . urlencode($name));
-            return;
+            $cols = $model->columns();
+            $pk = $model->getPrimaryKey();
+            $missing = [];
+            $required = $this->requiredColumns($cols, $pk);
+            foreach ($required as $req) {
+                $v = $_POST[$req] ?? null;
+                if ($v === null || (is_string($v) && trim($v) === '')) {
+                    $missing[] = $req;
+                }
+            }
+            if (!empty($missing)) {
+                $error = 'Preencha os campos obrigatórios: ' . implode(', ', $missing) . '.';
+                $fkOptions = $this->buildFkOptions($cols);
+                $enumOptions = $this->buildEnumOptions($cols);
+                return $this->render('table/create', ['table' => $name, 'cols' => $cols, 'fkOptions' => $fkOptions, 'enumOptions' => $enumOptions, 'error' => $error]);
+            }
+            try {
+                $model->create($_POST);
+                header('Location: ?controller=table&action=index&name=' . urlencode($name));
+                return;
+            } catch (\Throwable $e) {
+                $error = 'Erro ao salvar: ' . $e->getMessage();
+                $cols = $model->columns();
+                $fkOptions = $this->buildFkOptions($cols);
+                $enumOptions = $this->buildEnumOptions($cols);
+                return $this->render('table/create', ['table' => $name, 'cols' => $cols, 'fkOptions' => $fkOptions, 'enumOptions' => $enumOptions, 'error' => $error]);
+            }
         }
         $cols = $model->columns();
         $fkOptions = $this->buildFkOptions($cols);
@@ -157,9 +205,35 @@ class TableController {
         $model = new TableModel($name);
         if ($model->isView()) { http_response_code(405); echo 'Esta visão é somente leitura.'; return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $model->update($id, $_POST);
-            header('Location: ?controller=table&action=index&name=' . urlencode($name));
-            return;
+            $cols = $model->columns();
+            $pk = $model->getPrimaryKey();
+            $missing = [];
+            $required = $this->requiredColumns($cols, $pk);
+            foreach ($required as $req) {
+                $v = $_POST[$req] ?? null;
+                if ($v === null || (is_string($v) && trim($v) === '')) {
+                    $missing[] = $req;
+                }
+            }
+            if (!empty($missing)) {
+                $error = 'Preencha os campos obrigatórios: ' . implode(', ', $missing) . '.';
+                $row = $model->find($id);
+                $fkOptions = $this->buildFkOptions($cols);
+                $enumOptions = $this->buildEnumOptions($cols);
+                return $this->render('table/edit', ['table' => $name, 'row' => $row, 'cols' => $cols, 'pk' => $pk, 'fkOptions' => $fkOptions, 'enumOptions' => $enumOptions, 'error' => $error]);
+            }
+            try {
+                $model->update($id, $_POST);
+                header('Location: ?controller=table&action=index&name=' . urlencode($name));
+                return;
+            } catch (\Throwable $e) {
+                $error = 'Erro ao salvar: ' . $e->getMessage();
+                $row = $model->find($id);
+                $cols = $model->columns();
+                $fkOptions = $this->buildFkOptions($cols);
+                $enumOptions = $this->buildEnumOptions($cols);
+                return $this->render('table/edit', ['table' => $name, 'row' => $row, 'cols' => $cols, 'pk' => $pk, 'fkOptions' => $fkOptions, 'enumOptions' => $enumOptions, 'error' => $error]);
+            }
         }
         $row = $model->find($id);
         $cols = $model->columns();

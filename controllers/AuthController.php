@@ -15,7 +15,7 @@ class AuthController {
             $chk = $this->pdo->prepare($existsSql);
             $chk->execute(['schema' => $schema]);
             if (!$chk->fetch()) {
-                $sql = "CREATE TABLE usuarios (\n                    id BIGSERIAL PRIMARY KEY,\n                    nome TEXT NOT NULL,\n                    celular TEXT,\n                    email TEXT NOT NULL UNIQUE,\n                    login TEXT NOT NULL UNIQUE,\n                    senha_hash TEXT NOT NULL,\n                    datacadastro TIMESTAMP NOT NULL DEFAULT NOW(),\n                    ultimoacesso TIMESTAMP,\n                    ativo BOOLEAN NOT NULL DEFAULT TRUE\n                )";
+                $sql = "CREATE TABLE usuarios (\n                    id BIGSERIAL PRIMARY KEY,\n                    nome TEXT NOT NULL,\n                    celular TEXT,\n                    email TEXT NOT NULL UNIQUE,\n                    login TEXT NOT NULL,\n                    senha_hash TEXT NOT NULL,\n                    datacadastro TIMESTAMP NOT NULL DEFAULT NOW(),\n                    ultimoacesso TIMESTAMP,\n                    ativo BOOLEAN NOT NULL DEFAULT TRUE\n                )";
                 $this->pdo->exec($sql);
             }
         } else {
@@ -23,7 +23,7 @@ class AuthController {
             $existsSql = "SELECT 1 FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'usuarios'";
             $chk = $this->pdo->query($existsSql);
             if (!$chk->fetch()) {
-                $sql = "CREATE TABLE usuarios (\n                    id INT AUTO_INCREMENT PRIMARY KEY,\n                    nome VARCHAR(255) NOT NULL,\n                    celular VARCHAR(50),\n                    email VARCHAR(255) NOT NULL UNIQUE,\n                    login VARCHAR(100) NOT NULL UNIQUE,\n                    senha_hash VARCHAR(255) NOT NULL,\n                    datacadastro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n                    ultimoacesso TIMESTAMP NULL,\n                    ativo TINYINT(1) NOT NULL DEFAULT 1\n                ) ENGINE=InnoDB";
+                $sql = "CREATE TABLE usuarios (\n                    id INT AUTO_INCREMENT PRIMARY KEY,\n                    nome VARCHAR(255) NOT NULL,\n                    celular VARCHAR(50),\n                    email VARCHAR(255) NOT NULL UNIQUE,\n                    login VARCHAR(100) NOT NULL,\n                    senha_hash VARCHAR(255) NOT NULL,\n                    datacadastro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n                    ultimoacesso TIMESTAMP NULL,\n                    ativo TINYINT(1) NOT NULL DEFAULT 1\n                ) ENGINE=InnoDB";
                 $this->pdo->exec($sql);
             }
         }

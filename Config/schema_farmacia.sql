@@ -423,12 +423,22 @@ CREATE TABLE usuarios (
   nome TEXT NOT NULL,
   celular TEXT,
   email TEXT NOT NULL UNIQUE,
-  login TEXT NOT NULL UNIQUE,
+  login TEXT NOT NULL,
   senha_hash TEXT NOT NULL,
   datacadastro TIMESTAMP NOT NULL DEFAULT NOW(),
   ultimoacesso TIMESTAMP,
   ativo BOOLEAN NOT NULL DEFAULT TRUE
 );
+
+-- Remove a restrição de unicidade em login caso exista (idempotente)
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'usuarios_login_key'
+  ) THEN
+    ALTER TABLE usuarios DROP CONSTRAINT usuarios_login_key;
+  END IF;
+END $$;
 
 -- Hash automático de senha (preserva se já vier em formato hash começando com '$')
 CREATE OR REPLACE FUNCTION fn_hash_senha_usuarios()
@@ -704,12 +714,12 @@ ON CONFLICT DO NOTHING;
 -- Usuário e papéis (RBAC)
 INSERT INTO usuarios (nome, celular, email, login, senha_hash)
 VALUES ('Administrador', '(11) 90000-0000', 'admin@example.com', 'admin', 'admin123')
-ON CONFLICT (login) DO NOTHING;
+ON CONFLICT (email) DO NOTHING;
 
 -- Usuário Miguel
 INSERT INTO usuarios (nome, celular, email, login, senha_hash)
 VALUES ('Miguel', NULL, 'miguel@gmail.com', 'admin', 'miguel123')
-ON CONFLICT (login) DO NOTHING;
+ON CONFLICT (email) DO NOTHING;
 
 
 -- Vincula usuário ao papel Administrador

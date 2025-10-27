@@ -5,7 +5,7 @@ return [
         'driver' => 'pgsql',
         'host' => 'localhost',
         'port' => '5432',
-        'database' => 'farmacia',
+        'database' => 'farmacia2',
         'username' => 'postgres',
         'password' => '1234',
         'schema' => 'public',
