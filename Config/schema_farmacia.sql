@@ -679,6 +679,8 @@ VALUES (
 )
 ON CONFLICT (medicamento_id, validade_mes) DO NOTHING;
 
+
+
 -- Entrada (10 caixas x 20 comprimidos = 200 base)
 INSERT INTO entradas (
   fornecedor_id, lote_id, numero_lote_fornecedor,
@@ -739,3 +741,36 @@ WHERE p.nome = 'Administrador'
 ON CONFLICT DO NOTHING;
 
 -- ... existing code ...
+
+-- Lote vencendo neste mês (idempotente): validade cai dentro do mês corrente
+INSERT INTO lotes (
+  medicamento_id, data_fabricacao, validade, nome_comercial, observacao
+)
+VALUES (
+  (SELECT id FROM medicamentos WHERE codigo = 'ANLG-001'),
+  CURRENT_DATE - INTERVAL '3 months',
+  (date_trunc('month', CURRENT_DATE) + INTERVAL '1 month' - INTERVAL '1 day')::date,
+  'Paracetamol 500 mg',
+  'Lote que vence este mês'
+)
+ON CONFLICT (medicamento_id, validade_mes) DO NOTHING;
+
+-- Entrada para o lote que vence neste mês (garante estoque disponível)
+INSERT INTO entradas (
+  fornecedor_id, lote_id, numero_lote_fornecedor,
+  quantidade_informada, unidade, unidades_por_embalagem,
+  estado, observacao
+)
+VALUES (
+  (SELECT id FROM fornecedores WHERE nome = 'Fornecedor Saúde'),
+  (
+    SELECT id FROM lotes 
+    WHERE medicamento_id = (SELECT id FROM medicamentos WHERE codigo = 'ANLG-001')
+      AND validade_mes = make_date(date_part('year', CURRENT_DATE)::int, date_part('month', CURRENT_DATE)::int, 1)
+    ORDER BY id DESC LIMIT 1
+  ),
+  'ACME-THIS-MONTH',
+  5, 'caixa', 20,
+  'novo', 'Entrada de lote que vence este mês'
+)
+ON CONFLICT DO NOTHING;
