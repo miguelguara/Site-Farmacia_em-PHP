@@ -12,7 +12,12 @@ function inputType($dataType) {
 }
 $pkName = $pk ?? null;
 function prettyLabel($s) {
-    return preg_replace('/_+/', ' ', (string)$s);
+    $s = (string)$s;
+    if (preg_match('/_id$/', $s)) {
+        $s = substr($s, 0, -3);
+    }
+    $s = preg_replace('/_+/', ' ', $s);
+    return trim($s);
 }
 ?>
 <h2>Editar registro em <?php echo htmlspecialchars($table); ?></h2>

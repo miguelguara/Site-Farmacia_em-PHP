@@ -11,7 +11,12 @@ function inputType($dataType) {
     return $map[$key] ?? 'text';
 }
 function prettyLabel($s) {
-    return preg_replace('/_+/', ' ', (string)$s);
+    $s = (string)$s;
+    if (preg_match('/_id$/', $s)) {
+        $s = substr($s, 0, -3); // remove sufixo _id
+    }
+    $s = preg_replace('/_+/', ' ', $s);
+    return trim($s);
 }
 ?>
 <h2>Novo registro em <?php echo htmlspecialchars($table); ?></h2>

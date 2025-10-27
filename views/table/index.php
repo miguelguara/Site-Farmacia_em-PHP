@@ -2,6 +2,12 @@
 $table = $name ?? ($table ?? '');
 $pk = $pk ?? null;
 $totalPages = max(1, (int)ceil($total / $perPage));
+function prettyLabel($s) {
+  $s = (string)$s;
+  if (preg_match('/_id$/', $s)) { $s = substr($s, 0, -3); }
+  $s = preg_replace('/_+/', ' ', $s);
+  return trim($s);
+}
 ?>
 <h2>Tabela: <?php echo htmlspecialchars($table); ?></h2>
 <?php if (empty($isView) || $isView === false): ?>
@@ -13,7 +19,7 @@ $totalPages = max(1, (int)ceil($total / $perPage));
   <thead>
     <tr>
       <?php foreach ($columns as $c): ?>
-        <th><?php echo htmlspecialchars(preg_replace('/_+/', ' ', (string)$c)); ?></th>
+        <th><?php echo htmlspecialchars(prettyLabel($c)); ?></th>
       <?php endforeach; ?>
       <th style="width:160px">Ações</th>
     </tr>
