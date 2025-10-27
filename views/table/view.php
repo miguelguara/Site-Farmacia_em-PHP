@@ -5,7 +5,7 @@
   <tbody>
     <?php foreach ($row as $key => $value): ?>
       <tr>
-        <th><?php echo htmlspecialchars($key); ?></th>
+        <th><?php echo htmlspecialchars(preg_replace('/_+/', ' ', (string)$key)); ?></th>
         <td><?php echo htmlspecialchars((string)$value); ?></td>
       </tr>
     <?php endforeach; ?>

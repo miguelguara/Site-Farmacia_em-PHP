@@ -13,7 +13,7 @@ $totalPages = max(1, (int)ceil($total / $perPage));
   <thead>
     <tr>
       <?php foreach ($columns as $c): ?>
-        <th><?php echo htmlspecialchars($c); ?></th>
+        <th><?php echo htmlspecialchars(preg_replace('/_+/', ' ', (string)$c)); ?></th>
       <?php endforeach; ?>
       <th style="width:160px">Ações</th>
     </tr>

@@ -10,6 +10,9 @@ function inputType($dataType) {
     $key = strtolower($dataType);
     return $map[$key] ?? 'text';
 }
+function prettyLabel($s) {
+    return preg_replace('/_+/', ' ', (string)$s);
+}
 ?>
 <h2>Novo registro em <?php echo htmlspecialchars($table); ?></h2>
 <form class="form" method="post">
@@ -25,7 +28,7 @@ function inputType($dataType) {
       $nullable = strtolower($col['is_nullable'] ?? '') === 'yes';
   ?>
   <div class="row">
-    <label><?php echo htmlspecialchars($name); ?></label>
+    <label><?php echo htmlspecialchars(prettyLabel($name)); ?></label>
     <?php if ($isFk || $isEnum): ?>
       <?php $options = $isFk ? ($fkOptions[$name] ?? []) : ($enumOptions[$name] ?? []); ?>
       <select name="<?php echo htmlspecialchars($name); ?>" <?php echo $nullable ? '' : 'required'; ?>>

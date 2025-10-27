@@ -11,6 +11,9 @@ function inputType($dataType) {
     return $map[$key] ?? 'text';
 }
 $pkName = $pk ?? null;
+function prettyLabel($s) {
+    return preg_replace('/_+/', ' ', (string)$s);
+}
 ?>
 <h2>Editar registro em <?php echo htmlspecialchars($table); ?></h2>
 <form class="form" method="post">
@@ -25,7 +28,7 @@ $pkName = $pk ?? null;
       $nullable = strtolower($col['is_nullable'] ?? '') === 'yes';
   ?>
   <div class="row">
-    <label><?php echo htmlspecialchars($name); ?></label>
+    <label><?php echo htmlspecialchars(prettyLabel($name)); ?></label>
     <?php if ($isFk || $isEnum): ?>
       <?php $options = $isFk ? ($fkOptions[$name] ?? []) : ($enumOptions[$name] ?? []); ?>
       <select name="<?php echo htmlspecialchars($name); ?>">
