@@ -16,6 +16,7 @@ $assetHref = ($base === '' || $base === '/')
   <header class="header">
     <div class="container" style="margin:0 auto;">
       <span class="brand">Farmacia beneficente</span>
+      <a class="btn btn-outline" href="?controller=about&action=index" style="margin-left:12px;">Sobre</a>
       <div class="right">
         <?php if (isset($_SESSION['user'])): ?>
           <span>Olá, <?php echo htmlspecialchars($_SESSION['user']['nome']); ?></span>
