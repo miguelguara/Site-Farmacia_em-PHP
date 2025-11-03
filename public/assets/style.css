@@ -5,7 +5,9 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: #1f29
 
 /* Top Bar */
 .header { background: #1d4ed8; color: #fff; padding: 14px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-.header .brand { font-weight: 700; font-size: 20px; letter-spacing: .3px; }
+.header .brand-wrap { display: inline-flex; align-items: center; gap: 10px; }
+.header .brand-wrap img { height: 32px; width: auto; display: inline-block; }
+.header .brand { font-weight: 700; font-size: 24px; letter-spacing: .3px; }
 .header .right { float: right; display: inline-flex; align-items: center; gap: 10px; }
 .header .right .btn { padding: 6px 10px; border-radius: 8px; }
 

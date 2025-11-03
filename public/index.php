@@ -15,8 +15,8 @@ spl_autoload_register(function($class) {
 $controllerName = isset($_GET['controller']) ? ucfirst(strtolower($_GET['controller'])) . 'Controller' : 'HomeController';
 $action = $_GET['action'] ?? 'index';
 
-// Proteção de rotas: requer login para qualquer controller exceto AuthController e AboutController
-if (!isset($_SESSION['user']) && $controllerName !== 'AuthController' && $controllerName !== 'AboutController') {
+// Proteção de rotas: requer login para qualquer controller exceto AuthController, AboutController e ImgController
+if (!isset($_SESSION['user']) && !in_array($controllerName, ['AuthController', 'AboutController', 'ImgController'])) {
     header('Location: ?controller=auth&action=login');
     exit;
 }
@@ -35,7 +35,7 @@ if (!$hasFullAccess) {
                 echo 'Acesso restrito: apenas Dispensações.';
                 exit;
             }
-    } else if (!in_array($controllerName, ['HomeController', 'AuthController', 'AboutController'])) {
+    } else if (!in_array($controllerName, ['HomeController', 'AuthController', 'AboutController', 'ImgController'])) {
         http_response_code(403);
         echo 'Acesso restrito: apenas Dispensações.';
         exit;
