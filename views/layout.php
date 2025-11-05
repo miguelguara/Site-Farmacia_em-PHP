@@ -21,6 +21,9 @@ $assetHref = ($base === '' || $base === '/')
       </span>
       <a class="btn btn-outline" href="?controller=about&action=index" style="margin-left:12px;">Sobre</a>
       <div class="right">
+        <button id="theme-toggle" class="btn btn-outline" aria-label="Alternar tema">
+          <span class="theme-icon">🌙</span>
+        </button>
         <?php if (isset($_SESSION['user'])): ?>
           <span>Olá, <?php echo htmlspecialchars($_SESSION['user']['nome']); ?></span>
           <a class="btn btn-outline" href="?controller=auth&action=logout">Sair</a>
@@ -64,5 +67,36 @@ $assetHref = ($base === '' || $base === '/')
     <?php if (isset($error) && $error) { echo '<div class="error">' . htmlspecialchars($error) . '</div>'; } ?>
     <?php require $viewFile; ?>
   </main>
+
+  <script>
+    // Dark mode functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = themeToggle.querySelector('.theme-icon');
+    const html = document.documentElement;
+
+    // Check for saved theme preference or default to light mode
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    
+    // Apply the saved theme on page load
+    if (currentTheme === 'dark') {
+      html.setAttribute('data-theme', 'dark');
+      themeIcon.textContent = '☀️';
+    }
+
+    // Toggle theme function
+    function toggleTheme() {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      
+      // Update icon
+      themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    }
+
+    // Add click event listener
+    themeToggle.addEventListener('click', toggleTheme);
+  </script>
 </body>
 </html>
