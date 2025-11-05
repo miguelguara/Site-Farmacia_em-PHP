@@ -9,12 +9,13 @@ function prettyLabel($s) {
   return trim($s);
 }
 ?>
-<h2>Tabela: <?php echo htmlspecialchars($table); ?></h2>
-<?php if (empty($isView) || $isView === false): ?>
-<p>
-  <a class="btn btn-primary" href="?controller=table&action=create&name=<?php echo urlencode($table); ?>">Novo</a>
-</p>
-<?php endif; ?>
+<div class="table-title">
+  <h2 style="margin: 0; font-size: 20px; font-weight: 700;">Tabela: <?php echo htmlspecialchars($table); ?></h2>
+  <?php if (empty($isView) || $isView === false): ?>
+  <a class="btn btn-primary" href="?controller=table&action=create&name=<?php echo urlencode($table); ?>">Novo Registro</a>
+  <?php endif; ?>
+</div>
+<div class="table-wrapper">
 <table class="table">
   <thead>
     <tr>
@@ -25,36 +26,47 @@ function prettyLabel($s) {
     </tr>
   </thead>
   <tbody>
-    <?php foreach ($rows as $row): ?>
+    <?php if (empty($rows)): ?>
       <tr>
-        <?php foreach ($columns as $c): ?>
-          <?php
-            $val = $row[$c] ?? '';
-            $labelMaps = $fkLabelMaps ?? [];
-            $display = $val;
-            if (isset($labelMaps[$c])) {
-              $key = (string)$val;
-              if ($key !== '' && isset($labelMaps[$c][$key])) {
-                $display = $labelMaps[$c][$key];
-              }
-            }
-          ?>
-          <td><?php echo htmlspecialchars((string)$display); ?></td>
-        <?php endforeach; ?>
-        <td class="actions">
-          <?php $id = $pk ? ($row[$pk] ?? null) : null; ?>
-          <?php if ($id !== null): ?>
-            <a class="btn btn-outline" href="?controller=table&action=view&name=<?php echo urlencode($table); ?>&id=<?php echo urlencode($id); ?>">Ver</a>
-            <a class="btn btn-outline" href="?controller=table&action=edit&name=<?php echo urlencode($table); ?>&id=<?php echo urlencode($id); ?>">Editar</a>
-            <a class="btn btn-danger" href="?controller=table&action=delete&name=<?php echo urlencode($table); ?>&id=<?php echo urlencode($id); ?>" onclick="return confirm('Excluir registro?');">Excluir</a>
-          <?php else: ?>
-            —
-          <?php endif; ?>
+        <td colspan="<?php echo count($columns) + 1; ?>" style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+          <div style="font-size: 48px; margin-bottom: 16px;">📭</div>
+          <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Nenhum registro encontrado</div>
+          <div style="font-size: 14px;">Comece adicionando um novo registro usando o botão acima.</div>
         </td>
       </tr>
-    <?php endforeach; ?>
+    <?php else: ?>
+      <?php foreach ($rows as $row): ?>
+        <tr>
+          <?php foreach ($columns as $c): ?>
+            <?php
+              $val = $row[$c] ?? '';
+              $labelMaps = $fkLabelMaps ?? [];
+              $display = $val;
+              if (isset($labelMaps[$c])) {
+                $key = (string)$val;
+                if ($key !== '' && isset($labelMaps[$c][$key])) {
+                  $display = $labelMaps[$c][$key];
+                }
+              }
+            ?>
+            <td><?php echo htmlspecialchars((string)$display); ?></td>
+          <?php endforeach; ?>
+          <td class="actions">
+            <?php $id = $pk ? ($row[$pk] ?? null) : null; ?>
+            <?php if ($id !== null): ?>
+              <a class="btn btn-outline" href="?controller=table&action=view&name=<?php echo urlencode($table); ?>&id=<?php echo urlencode($id); ?>">Ver</a>
+              <a class="btn btn-outline" href="?controller=table&action=edit&name=<?php echo urlencode($table); ?>&id=<?php echo urlencode($id); ?>">Editar</a>
+              <a class="btn btn-danger" href="?controller=table&action=delete&name=<?php echo urlencode($table); ?>&id=<?php echo urlencode($id); ?>" onclick="return confirm('Excluir registro?');">Excluir</a>
+            <?php else: ?>
+              —
+            <?php endif; ?>
+          </td>
+        </tr>
+      <?php endforeach; ?>
+    <?php endif; ?>
   </tbody>
 </table>
+</div>
 <div class="pagination">
   <span>Página <?php echo $page; ?> de <?php echo $totalPages; ?>.</span>
   <?php if ($page > 1): ?>
