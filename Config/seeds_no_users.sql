@@ -1,4 +1,4 @@
--- Seeds idempotentes SEM inserir novos usuários
+-- Seeds idempetentes SEM inserir novos usuários
 -- Usa as mesmas entidades do schema, com ON CONFLICT para evitar duplicações
 -- Ajusta permissões e papéis, e vincula admin se já existir
 

@@ -18,7 +18,7 @@ class Database {
             \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
         ];
         self::$pdo = new \PDO($dsn, $db['username'], $db['password'], $options);
-        return self::$pdo;
+        return self::$pdo;        
     }
 
     public static function driver(): string {
