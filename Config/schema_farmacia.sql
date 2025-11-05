@@ -545,6 +545,12 @@ INSERT INTO permissoes (codigo, nome) VALUES
   ('estoque', 'Acesso ao estoque')
 ON CONFLICT (codigo) DO NOTHING;
 
+-- Papéis (roles) básicos
+INSERT INTO papeis (nome, descricao) VALUES
+  ('Administrador', 'Acesso total ao sistema'),
+  ('Operador', 'Operações de estoque e dispensação')
+ON CONFLICT (nome) DO NOTHING;
+
 -- =====================
 -- Validação de CPF
 -- =====================
@@ -732,12 +738,28 @@ JOIN papeis p ON p.nome = 'Administrador'
 WHERE u.login = 'admin'
 ON CONFLICT DO NOTHING;
 
+-- Vincula usuário Miguel ao papel Operador (exemplo para segunda associação)
+INSERT INTO usuarios_papeis (usuario_id, papel_id)
+SELECT u.id, p.id
+FROM usuarios u
+JOIN papeis p ON p.nome = 'Operador'
+WHERE u.email = 'miguel@gmail.com'
+ON CONFLICT DO NOTHING;
+
 -- Concede permissões ao papel Administrador
 INSERT INTO papeis_permissoes (papel_id, permissao_id)
 SELECT p.id, pe.id
 FROM papeis p
 JOIN permissoes pe ON pe.codigo IN ('acesso_sistema','estoque','entradas','saidas','relatorios')
 WHERE p.nome = 'Administrador'
+ON CONFLICT DO NOTHING;
+
+-- Concede permissão direta ao usuário Miguel (exemplo em usuarios_permissoes)
+INSERT INTO usuarios_permissoes (usuario_id, permissao_id)
+SELECT u.id, pe.id
+FROM usuarios u
+JOIN permissoes pe ON pe.codigo = 'relatorios'
+WHERE u.email = 'miguel@gmail.com'
 ON CONFLICT DO NOTHING;
 
 -- ... existing code ...

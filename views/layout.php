@@ -14,7 +14,7 @@ $assetHref = ($base === '' || $base === '/')
 </head>
 <body>
   <header class="header">
-    <div class="container" style="margin:0 auto;">
+    <div class="container" style="margin:0;">
       <span class="brand-wrap">
         <img src="?controller=img&action=get&name=HeartSyringe.png" alt="Logo" />
         <span class="brand">Farmacia beneficente</span>
@@ -34,39 +34,40 @@ $assetHref = ($base === '' || $base === '/')
     </div>
   </header>
 
-  <div class="container">
-    <div class="menu card">
-      <ul>
-        <li><a class="active" href="?">Início</a></li>
-        <?php $isLogged = isset($_SESSION['user']); $loginStr = strtolower($_SESSION['user']['login'] ?? ''); $isAtt = strpos($loginStr, 'atendente') !== false; ?>
-        <?php if (!$isLogged): ?>
-          <!-- Antes do login, apenas Início visível -->
-        <?php elseif ($isAtt): ?>
-          <li><a href="?controller=table&action=index&name=dispensacoes">Dispensações</a></li>
-        <?php else: ?>
-          <li><a href="?controller=table&action=index&name=medicamentos">Medicamentos</a></li>
-          <li><a href="?controller=table&action=index&name=lotes">Lotes</a></li>
-          <li><a href="?controller=table&action=index&name=entradas">Entradas</a></li>
-          <li><a href="?controller=table&action=index&name=dispensacoes">Dispensações</a></li>
-          <li><a href="?controller=table&action=index&name=laboratorios">Laboratórios</a></li>
-          <li><a href="?controller=table&action=index&name=classes_terapeuticas">Classes terapêuticas</a></li>
-          <li><a href="?controller=table&action=index&name=fornecedores">Fornecedores</a></li>
-          <li><a href="?controller=table&action=index&name=pacientes">Pacientes</a></li>
-          <li><a href="?controller=table&action=index&name=vw_estoque_por_lote">Estoque por lote</a></li>
-          <li><a href="?controller=table&action=index&name=vw_estoque_por_medicamento">Estoque por medicamento</a></li>
-          <li><a href="?controller=table&action=index&name=vw_alerta_validade_mes_atual">Alertas mês atual</a></li>
-          <li><a href="?controller=table&action=index&name=vw_alerta_validade">Alertas de validade</a></li>
-          <li><a href="?controller=table&action=index&name=vw_alerta_estoque_baixo">Alertas de estoque</a></li>
-          <li><a href="?controller=table&action=index&name=usuarios">Usuários</a></li>
-        <?php endif; ?>
-      </ul>
-    </div>
+  <div class="container app">
+    <aside class="sidebar">
+      <div class="menu card">
+        <ul>
+          <li><a class="active" href="?">Início</a></li>
+          <?php $isLogged = isset($_SESSION['user']); $loginStr = strtolower($_SESSION['user']['login'] ?? ''); $isAtt = strpos($loginStr, 'atendente') !== false; ?>
+          <?php if (!$isLogged): ?>
+            <!-- Antes do login, apenas Início visível -->
+          <?php elseif ($isAtt): ?>
+            <li><a href="?controller=table&action=index&name=dispensacoes">Dispensações</a></li>
+          <?php else: ?>
+            <li><a href="?controller=table&action=index&name=medicamentos">Medicamentos</a></li>
+            <li><a href="?controller=table&action=index&name=lotes">Lotes</a></li>
+            <li><a href="?controller=table&action=index&name=entradas">Entradas</a></li>
+            <li><a href="?controller=table&action=index&name=dispensacoes">Dispensações</a></li>
+            <li><a href="?controller=table&action=index&name=laboratorios">Laboratórios</a></li>
+            <li><a href="?controller=table&action=index&name=classes_terapeuticas">Classes terapêuticas</a></li>
+            <li><a href="?controller=table&action=index&name=fornecedores">Fornecedores</a></li>
+            <li><a href="?controller=table&action=index&name=pacientes">Pacientes</a></li>
+            <li><a href="?controller=table&action=index&name=vw_estoque_por_lote">Estoque por lote</a></li>
+            <li><a href="?controller=table&action=index&name=vw_estoque_por_medicamento">Estoque por medicamento</a></li>
+            <li><a href="?controller=table&action=index&name=vw_alerta_validade_mes_atual">Alertas mês atual</a></li>
+            <li><a href="?controller=table&action=index&name=vw_alerta_validade">Alertas de validade</a></li>
+            <li><a href="?controller=table&action=index&name=vw_alerta_estoque_baixo">Alertas de estoque</a></li>
+            <li><a href="?controller=table&action=index&name=usuarios">Usuários</a></li>
+          <?php endif; ?>
+        </ul>
+      </div>
+    </aside>
+    <main class="content">
+      <?php if (isset($error) && $error) { echo '<div class="error">' . htmlspecialchars($error) . '</div>'; } ?>
+      <?php require $viewFile; ?>
+    </main>
   </div>
-
-  <main class="container">
-    <?php if (isset($error) && $error) { echo '<div class="error">' . htmlspecialchars($error) . '</div>'; } ?>
-    <?php require $viewFile; ?>
-  </main>
 
   <script>
     // Dark mode functionality
