@@ -21,14 +21,17 @@ $assetHref = ($base === '' || $base === '/')
       </span>
       <a class="btn btn-outline" href="?controller=about&action=index" style="margin-left:12px;">Sobre</a>
       <div class="right">
-        <button id="theme-toggle" class="btn btn-outline" aria-label="Alternar tema">
-          <span class="theme-icon">🌙</span>
-        </button>
         <?php if (isset($_SESSION['user'])): ?>
           <span>Olá, <?php echo htmlspecialchars($_SESSION['user']['nome']); ?></span>
-          <a class="btn btn-outline" href="?controller=auth&action=logout">Sair</a>
+          <button id="theme-toggle" class="btn btn-outline" aria-label="Alternar tema" style="margin-left:8px;">
+            <span class="theme-icon">🌙</span>
+          </button>
+          <a class="btn btn-outline" href="?controller=auth&action=logout" style="margin-left:8px;">Sair</a>
         <?php else: ?>
-          <a class="btn btn-outline" href="?controller=auth&action=login">Entrar</a>
+          <button id="theme-toggle" class="btn btn-outline" aria-label="Alternar tema" style="margin-left:8px;">
+            <span class="theme-icon">🌙</span>
+          </button>
+          <a class="btn btn-outline" href="?controller=auth&action=login" style="margin-left:8px;">Entrar</a>
         <?php endif; ?>
       </div>
     </div>

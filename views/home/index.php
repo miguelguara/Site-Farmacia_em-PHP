@@ -14,7 +14,7 @@ try {
     );
     $stockRows = $stmtStock->fetchAll();
 
-    // Build associative arrays for quick lookups
+    // Build associative arrays for quick lookups\
     $stockByMed = [];
     $maxStock = 0;
     $totalStock = 0;
@@ -92,7 +92,7 @@ try {
   /* Horizontal bar chart */
   .chart-hbar { width: 100%; min-height: 420px; display: flex; flex-direction: column; gap: 10px; justify-content: center; margin: 0 auto; }
   .chart-hbar__row { display: grid; grid-template-columns: minmax(140px, 240px) 1fr auto; align-items: center; gap: 12px; }
-  .chart-hbar__label { font-size: 0.9rem; color: var(--text, #333); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chart-hbar__label { font-size: 0.9rem; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .chart-hbar__bar { position: relative; height: 22px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 6px; }
   .chart-hbar__fill { position: absolute; left: 0; top: 0; bottom: 0; width: var(--bar-w, 0%); background: var(--bar-color, var(--button-primary)); border-radius: 6px; }
   .chart-hbar__value { font-size: 0.85rem; color: var(--text-secondary); text-align: right; min-width: 120px; }
@@ -164,7 +164,7 @@ try {
   </section>
 
   <section class="home-dashboard__section">
-    <h2 style="margin:0 0 0.5rem 0;">Movimentação na semana</h2>
+    <h2 style="margin:0 0 2rem 0;">Movimentação na semana</h2>
     <div class="pies">
       <?php
       // Helper to build conic-gradient string given data and palette
@@ -239,12 +239,10 @@ try {
     </div>
   </section>
 </div>
-$driver = Database::driver();
-$schema = Database::schema();
-?>
-<div class="card">
+
+<div style="margin:2rem 0 0 0;" class="card" >
   <div class="hero">Bem-vindo ao Sistema de Gestão de Farmácia</div>
-  <p class="sub">Escolha uma opção no menu acima para começar.</p>
+  <p class="sub">Escolha uma opção do menu abaixo para começar.</p>
 
   <?php $loginStr = strtolower($_SESSION['user']['login'] ?? ''); $isAtt = strpos($loginStr, 'atendente') !== false; ?>
   <div class="grid mt-2">
@@ -331,7 +329,7 @@ $schema = Database::schema();
     <?php endif; ?>
   </div>
 
-  <div class="mt-2">
+ <!-- <div class="mt-2">
     <p style="color:#6b7280;">Driver: <strong><?php echo htmlspecialchars($driver); ?></strong> | Schema: <strong><?php echo htmlspecialchars($schema ?? 'database atual'); ?></strong></p>
-  </div>
+  </div> -->
 </div>
