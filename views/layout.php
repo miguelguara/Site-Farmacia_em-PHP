@@ -41,27 +41,33 @@ $assetHref = ($base === '' || $base === '/')
     <aside class="sidebar">
       <div class="menu card">
         <ul>
-          <li><a class="active" href="?">Início</a></li>
-          <?php $isLogged = isset($_SESSION['user']); $loginStr = strtolower($_SESSION['user']['login'] ?? ''); $isAtt = strpos($loginStr, 'atendente') !== false; ?>
+          <?php 
+            $isLogged = isset($_SESSION['user']); 
+            $loginStr = strtolower($_SESSION['user']['login'] ?? ''); 
+            $isAtt = strpos($loginStr, 'atendente') !== false; 
+            $ctl = strtolower($_GET['controller'] ?? 'home');
+            $name = strtolower($_GET['name'] ?? '');
+          ?>
+          <li><a class="<?php echo ($ctl === 'home' ? 'active' : ''); ?>" href="?">Início</a></li>
           <?php if (!$isLogged): ?>
             <!-- Antes do login, apenas Início visível -->
           <?php elseif ($isAtt): ?>
-            <li><a href="?controller=table&action=index&name=dispensacoes">Dispensações</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='dispensacoes' ? 'active' : ''); ?>" href="?controller=table&action=index&name=dispensacoes">Dispensações</a></li>
           <?php else: ?>
-            <li><a href="?controller=table&action=index&name=medicamentos">Medicamentos</a></li>
-            <li><a href="?controller=table&action=index&name=lotes">Lotes</a></li>
-            <li><a href="?controller=table&action=index&name=entradas">Entradas</a></li>
-            <li><a href="?controller=table&action=index&name=dispensacoes">Dispensações</a></li>
-            <li><a href="?controller=table&action=index&name=laboratorios">Laboratórios</a></li>
-            <li><a href="?controller=table&action=index&name=classes_terapeuticas">Classes terapêuticas</a></li>
-            <li><a href="?controller=table&action=index&name=fornecedores">Fornecedores</a></li>
-            <li><a href="?controller=table&action=index&name=pacientes">Pacientes</a></li>
-            <li><a href="?controller=table&action=index&name=vw_estoque_por_lote">Estoque por lote</a></li>
-            <li><a href="?controller=table&action=index&name=vw_estoque_por_medicamento">Estoque por medicamento</a></li>
-            <li><a href="?controller=table&action=index&name=vw_alerta_validade_mes_atual">Alertas mês atual</a></li>
-            <li><a href="?controller=table&action=index&name=vw_alerta_validade">Alertas de validade</a></li>
-            <li><a href="?controller=table&action=index&name=vw_alerta_estoque_baixo">Alertas de estoque</a></li>
-            <li><a href="?controller=table&action=index&name=usuarios">Usuários</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='medicamentos' ? 'active' : ''); ?>" href="?controller=table&action=index&name=medicamentos">Medicamentos</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='lotes' ? 'active' : ''); ?>" href="?controller=table&action=index&name=lotes">Lotes</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='entradas' ? 'active' : ''); ?>" href="?controller=table&action=index&name=entradas">Entradas</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='dispensacoes' ? 'active' : ''); ?>" href="?controller=table&action=index&name=dispensacoes">Dispensações</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='laboratorios' ? 'active' : ''); ?>" href="?controller=table&action=index&name=laboratorios">Laboratórios</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='classes_terapeuticas' ? 'active' : ''); ?>" href="?controller=table&action=index&name=classes_terapeuticas">Classes terapêuticas</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='fornecedores' ? 'active' : ''); ?>" href="?controller=table&action=index&name=fornecedores">Fornecedores</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='pacientes' ? 'active' : ''); ?>" href="?controller=table&action=index&name=pacientes">Pacientes</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='vw_estoque_por_lote' ? 'active' : ''); ?>" href="?controller=table&action=index&name=vw_estoque_por_lote">Estoque por lote</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='vw_estoque_por_medicamento' ? 'active' : ''); ?>" href="?controller=table&action=index&name=vw_estoque_por_medicamento">Estoque por medicamento</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='vw_alerta_validade_mes_atual' ? 'active' : ''); ?>" href="?controller=table&action=index&name=vw_alerta_validade_mes_atual">Alertas mês atual</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='vw_alerta_validade' ? 'active' : ''); ?>" href="?controller=table&action=index&name=vw_alerta_validade">Alertas de validade</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='vw_alerta_estoque_baixo' ? 'active' : ''); ?>" href="?controller=table&action=index&name=vw_alerta_estoque_baixo">Alertas de estoque</a></li>
+            <li><a class="<?php echo ($ctl==='table' && $name==='usuarios' ? 'active' : ''); ?>" href="?controller=table&action=index&name=usuarios">Usuários</a></li>
           <?php endif; ?>
         </ul>
       </div>
