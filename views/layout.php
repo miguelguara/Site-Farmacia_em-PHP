@@ -23,14 +23,28 @@ $assetHref = ($base === '' || $base === '/')
       <div class="right">
         <?php if (isset($_SESSION['user'])): ?>
           <span>Olá, <?php echo htmlspecialchars($_SESSION['user']['nome']); ?></span>
-          <button id="theme-toggle" class="btn btn-outline" aria-label="Alternar tema" style="margin-left:8px;">
-            <span class="theme-icon">🌙</span>
-          </button>
+          <div class="theme-toggle-wrap" style="position:relative; display:inline-block; margin-left:8px;">
+            <button id="theme-toggle" class="btn btn-outline" aria-label="Alternar tema">
+              <img class="theme-icon" src="?controller=img&action=get&name=luadarkmodeoff.png" alt="Alternar tema" />
+            </button>
+            <div id="theme-menu" class="theme-menu" hidden>
+              <button type="button" class="theme-option" data-theme="light">Branco</button>
+              <button type="button" class="theme-option" data-theme="night">Noturno</button>
+              <button type="button" class="theme-option" data-theme="black">Escuro</button>
+            </div>
+          </div>
           <a class="btn btn-outline" href="?controller=auth&action=logout" style="margin-left:8px;">Sair</a>
         <?php else: ?>
-          <button id="theme-toggle" class="btn btn-outline" aria-label="Alternar tema" style="margin-left:8px;">
-            <span class="theme-icon">🌙</span>
-          </button>
+          <div class="theme-toggle-wrap" style="position:relative; display:inline-block; margin-left:8px;">
+            <button id="theme-toggle" class="btn btn-outline" aria-label="Alternar tema">
+              <img class="theme-icon" src="?controller=img&action=get&name=luadarkmodeoff.png" alt="Alternar tema" />
+            </button>
+            <div id="theme-menu" class="theme-menu" hidden>
+              <button type="button" class="theme-option" data-theme="light">Branco</button>
+              <button type="button" class="theme-option" data-theme="night">Noturno</button>
+              <button type="button" class="theme-option" data-theme="black">Escuro</button>
+            </div>
+          </div>
           <a class="btn btn-outline" href="?controller=auth&action=login" style="margin-left:8px;">Entrar</a>
         <?php endif; ?>
       </div>
@@ -82,31 +96,60 @@ $assetHref = ($base === '' || $base === '/')
     // Dark mode functionality
     const themeToggle = document.getElementById('theme-toggle');
     const themeIcon = themeToggle.querySelector('.theme-icon');
+    const themeMenu = document.getElementById('theme-menu');
+    const themeOptions = themeMenu ? themeMenu.querySelectorAll('.theme-option') : [];
     const html = document.documentElement;
 
-    // Check for saved theme preference or default to light mode
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    
-    // Apply the saved theme on page load
-    if (currentTheme === 'dark') {
-      html.setAttribute('data-theme', 'dark');
-      themeIcon.textContent = '☀️';
+    function setTheme(theme) {
+      const valid = ['light','night','black'];
+      const t = valid.includes(theme) ? theme : 'light';
+      html.setAttribute('data-theme', t);
+      localStorage.setItem('theme', t);
+      // Update icon PNG by theme
+      if (t === 'night' || t === 'black') {
+        themeIcon.setAttribute('src', '?controller=img&action=get&name=luadarkmodeon.png');
+      } else {
+        themeIcon.setAttribute('src', '?controller=img&action=get&name=luadarkmodeoff.png');
+      }
+      // Update active option
+      if (themeOptions && themeOptions.length) {
+        themeOptions.forEach(btn => {
+          if (btn.dataset.theme === t) btn.classList.add('active');
+          else btn.classList.remove('active');
+        });
+      }
     }
 
-    // Toggle theme function
-    function toggleTheme() {
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      
-      html.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      
-      // Update icon
-      themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    // Check for saved theme preference or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+
+    // Toggle menu visibility
+    function toggleThemeMenu() {
+      if (!themeMenu) return;
+      themeMenu.hidden = !themeMenu.hidden;
     }
 
-    // Add click event listener
-    themeToggle.addEventListener('click', toggleTheme);
+    // Open menu on button click
+    themeToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleThemeMenu();
+    });
+
+    // Handle option selection
+    if (themeOptions && themeOptions.length) {
+      themeOptions.forEach(btn => btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const t = btn.dataset.theme;
+        setTheme(t);
+        themeMenu.hidden = true;
+      }));
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', () => {
+      if (themeMenu && !themeMenu.hidden) themeMenu.hidden = true;
+    });
   </script>
 </body>
 </html>

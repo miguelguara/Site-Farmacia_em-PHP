@@ -9,6 +9,8 @@ class ImgController {
             'CodeMonkey.jpg'   => 'image/jpeg',
             'HeartSyringe.png' => 'image/png',
             'CodeMonkey.png'   => 'image/png',
+            'luadarkmodeoff.png' => 'image/png',
+            'luadarkmodeon.png'  => 'image/png',
         ];
         if (!isset($allowed[$name])) {
             http_response_code(404);

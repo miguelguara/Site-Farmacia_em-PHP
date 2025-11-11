@@ -41,6 +41,50 @@
   --table-hover: #334155;
 }
 
+/* Night theme (igual ao dark atual) */
+[data-theme="night"] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --border-color: #334155;
+  --header-bg: #0c4a6e;
+  --header-text: #f1f5f9;
+  --button-primary: #0ea5e9;
+  --button-primary-hover: #0284c7;
+  --button-outline-text: #38bdf8;
+  --button-outline-border: #38bdf8;
+  --button-outline-hover: #1e40af;
+  --error-color: #ef4444;
+  --shadow-color: rgba(0,0,0,0.3);
+  --shadow-light: rgba(0,0,0,0.15);
+  --link-hover: #1e40af;
+  --table-hover: #334155;
+}
+
+/* Black theme (preto com fonte branca) */
+[data-theme="black"] {
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #111111;
+  --text-primary: #ffffff;
+  --text-secondary: #d1d5db;
+  --border-color: #1f1f1f;
+  --header-bg: #000000;
+  --header-text: #ffffff;
+  --button-primary: #ffffff;
+  --button-primary-hover: #e5e5e5;
+  --button-outline-text: #ffffff;
+  --button-outline-border: #ffffff;
+  --button-outline-hover: #111111;
+  --error-color: #ef4444;
+  --shadow-color: rgba(255,255,255,0.1);
+  --shadow-light: rgba(255,255,255,0.05);
+  --link-hover: #e5e5e5;
+  --table-hover: #0f0f0f;
+}
+
 /* Reset básico */
 * { box-sizing: border-box; }
 html, body { height: 100%; }
@@ -69,7 +113,17 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
 .menu a { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-primary); font-weight: 600; border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px; background: var(--bg-secondary); transition: all 0.3s ease; }
 .menu a:hover { background: var(--button-primary); color: var(--header-text); border-color: var(--button-primary); }
 .menu a:focus-visible { background: var(--button-primary); color: var(--header-text); border-color: var(--button-primary); outline: none; }
+/* Black theme: force hover text color to black on the Home sidebar menu */
+[data-theme="black"] .menu a:hover {
+  color: #000000;
+}
+.menu a:focus-visible { background: var(--button-primary); color: var(--header-text); border-color: var(--button-primary); outline: none; }
 .menu .active { background: var(--button-primary); color: var(--header-text); border-color: var(--button-primary); }
+/* Black theme: ensure active menu item text is black for readability */
+[data-theme="black"] .menu .active,
+[data-theme="black"] .menu a.active {
+  color: #000000;
+}
 
 /* Hero */
 .hero { background: var(--header-bg); color: var(--header-text); border-radius: 8px; padding: 12px 16px; font-weight: 700; transition: background-color 0.3s ease; }
@@ -104,6 +158,10 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
 /* Danger também azul */
 .btn-danger { color: #fff; background: var(--error-color); border-color: var(--error-color); }
 .btn-danger:hover { background: #dc2626; border-color: #dc2626; }
+
+/* Black theme: ensure primary buttons have black text for contrast */
+[data-theme="black"] .btn-primary { color: #000000; }
+[data-theme="black"] .btn-primary:hover { color: #000000; }
 
 /* Pagination */
 .pagination { margin-top: 16px; display: flex; gap: 12px; align-items: center; justify-content: center; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px 16px; box-shadow: 0 1px 3px var(--shadow-light); transition: all 0.3s ease; }
@@ -149,6 +207,73 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
   border-color: var(--button-primary);
   transform: scale(1.1);
 }
+/* In black theme, set hover text color to black for visibility per request */
+[data-theme="black"] #theme-toggle:hover {
+  color: #000000;
+}
+
+/* Theme toggle icon image */
+.theme-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+
+/* Theme selection dropdown menu */
+.theme-menu {
+  position: absolute;
+  right: 0;
+  margin-top: 6px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 20px var(--shadow-color);
+  border-radius: 8px;
+  padding: 6px;
+  min-width: 160px;
+  z-index: 50;
+}
+
+.theme-menu .theme-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: var(--text-primary);
+  border: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.theme-menu .theme-option:hover {
+  background: var(--bg-tertiary);
+}
+
+.theme-menu .theme-option.active {
+  outline: 1px solid var(--button-primary);
+  background: var(--bg-tertiary);
+}
+
+/* Light theme overrides for theme menu (white text with contrasting background) */
+[data-theme="light"] .theme-menu {
+  background: var(--header-bg);
+}
+[data-theme="light"] .theme-menu .theme-option {
+  color: #ffffff;
+}
+[data-theme="light"] .theme-menu .theme-option:hover {
+  background: var(--button-outline-hover);
+}
+/* Keep active text white on light theme */
+[data-theme="light"] .theme-menu .theme-option.active {
+  color: #ffffff;
+}
+
+/* Black theme: make active dropdown button text black */
+[data-theme="black"] .theme-menu .theme-option.active {
+  color: #000000;
+}
 
 /* Smooth transitions for theme changes */
 * {
@@ -156,16 +281,20 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
 }
 
 /* Dark mode specific adjustments */
-[data-theme="dark"] .header .brand-wrap img {
+[data-theme="dark"] .header .brand-wrap img,
+[data-theme="night"] .header .brand-wrap img {
   filter: brightness(0.9) contrast(1.1);
 }
 
-[data-theme="dark"] .table tr:nth-child(even) td {
+[data-theme="dark"] .table tr:nth-child(even) td,
+[data-theme="night"] .table tr:nth-child(even) td {
   background-color: rgba(255, 255, 255, 0.02);
 }
 
 [data-theme="dark"] .form input::placeholder,
-[data-theme="dark"] .form textarea::placeholder {
+[data-theme="dark"] .form textarea::placeholder,
+[data-theme="night"] .form input::placeholder,
+[data-theme="night"] .form textarea::placeholder {
   color: var(--text-secondary);
   opacity: 0.7;
 }
