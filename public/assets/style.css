@@ -233,6 +233,7 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
   padding: 6px;
   min-width: 160px;
   z-index: 50;
+  color: var(--text-primary) !important;
 }
 
 .theme-menu .theme-option {
@@ -240,14 +241,16 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
   width: 100%;
   text-align: left;
   background: transparent;
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   border: none;
   padding: 8px 10px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 600;
+  opacity: 1;
 }
+.header .theme-menu .theme-option { color: var(--text-primary) !important; }
 
 .theme-menu .theme-option:hover {
   background: var(--bg-tertiary);
@@ -264,10 +267,12 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
   border-color: var(--border-color);
 }
 [data-theme="light"] .theme-menu .theme-option {
-  color: var(--text-primary);
+  color: #1f2937 !important;
+  opacity: 1;
 }
 [data-theme="light"] .theme-menu .theme-option:hover {
   background: var(--button-primary-hover);
+  color: #ffffff;
 }
 /* Active option visibility on light theme */
 [data-theme="light"] .theme-menu .theme-option.active {
