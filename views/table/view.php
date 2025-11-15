@@ -1,6 +1,7 @@
 <?php
 ?>
 <h2>Visualizar registro em <?php echo htmlspecialchars($table); ?></h2>
+<div class="table-wrapper">
 <table class="table">
   <tbody>
     <?php
@@ -19,6 +20,7 @@
     <?php endforeach; ?>
   </tbody>
 </table>
+</div>
 <p class="mt-1">
   <a class="btn btn-outline" href="?controller=table&action=index&name=<?php echo urlencode($table); ?>">Voltar</a>
 </p>

@@ -137,9 +137,9 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
 .tile p { margin: 0 0 10px; color: var(--text-secondary); }
 
 /* Table */
-.table { width: 100%; border-collapse: collapse; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; transition: background-color 0.3s ease, border-color 0.3s ease; box-shadow: 0 1px 3px var(--shadow-light); }
+.table { width: 100%; border-collapse: collapse; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; transition: background-color 0.3s ease, border-color 0.3s ease; box-shadow: 0 1px 3px var(--shadow-light); table-layout: fixed; }
 .table th { background: var(--bg-tertiary); font-weight: 600; color: var(--text-primary); transition: background-color 0.3s ease; text-align: left; position: sticky; top: 0; z-index: 10; }
-.table th, .table td { border-bottom: 1px solid var(--border-color); padding: 12px 16px; transition: all 0.3s ease; }
+.table th, .table td { border-bottom: 1px solid var(--border-color); padding: 12px 16px; transition: all 0.3s ease; word-break: break-word; white-space: normal; }
 .table td { color: var(--text-primary); vertical-align: middle; }
 .table tbody tr:last-child td { border-bottom: none; }
 .table tr:hover td { background: var(--table-hover); transition: background-color 0.3s ease; }
@@ -258,10 +258,11 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
 
 /* Light theme overrides for theme menu (white text with contrasting background) */
 [data-theme="light"] .theme-menu {
-  background: var(--header-bg);
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
 }
 [data-theme="light"] .theme-menu .theme-option {
-  color: #ffffff;
+  color: var(--text-primary);
 }
 [data-theme="light"] .theme-menu .theme-option:hover {
   background: var(--button-primary-hover);
@@ -306,12 +307,14 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
 
 /* Additional table enhancements */
 .table-wrapper {
+  max-width: 100%;
   overflow-x: auto;
   border-radius: 12px;
   box-shadow: 0 4px 12px var(--shadow-color);
   margin-bottom: 20px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Table header improvements */
