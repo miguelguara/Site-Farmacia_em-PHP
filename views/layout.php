@@ -25,7 +25,7 @@ $assetHref = ($base === '' || $base === '/')
           <span>Olá, <?php echo htmlspecialchars($_SESSION['user']['nome']); ?></span>
           <div class="theme-toggle-wrap" style="position:relative; display:inline-block; margin-left:8px;">
             <button id="theme-toggle" class="btn btn-outline" aria-label="Alternar tema">
-              <img class="theme-icon" src="?controller=img&action=get&name=luadarkmodeoff.png" alt="Alternar tema" />
+              <span class="theme-icon" aria-hidden="true">☀️</span>
             </button>
             <div id="theme-menu" class="theme-menu" hidden>
               <button type="button" class="theme-option" data-theme="light">Branco</button>
@@ -37,7 +37,7 @@ $assetHref = ($base === '' || $base === '/')
         <?php else: ?>
           <div class="theme-toggle-wrap" style="position:relative; display:inline-block; margin-left:8px;">
             <button id="theme-toggle" class="btn btn-outline" aria-label="Alternar tema">
-              <img class="theme-icon" src="?controller=img&action=get&name=luadarkmodeoff.png" alt="Alternar tema" />
+              <span class="theme-icon" aria-hidden="true">☀️</span>
             </button>
             <div id="theme-menu" class="theme-menu" hidden>
               <button type="button" class="theme-option" data-theme="light">Branco</button>
@@ -105,12 +105,11 @@ $assetHref = ($base === '' || $base === '/')
       const t = valid.includes(theme) ? theme : 'light';
       html.setAttribute('data-theme', t);
       localStorage.setItem('theme', t);
-      // Update icon PNG by theme
-      if (t === 'night' || t === 'black') {
-        themeIcon.setAttribute('src', '?controller=img&action=get&name=luadarkmodeon.png');
-      } else {
-        themeIcon.setAttribute('src', '?controller=img&action=get&name=luadarkmodeoff.png');
-      }
+      // Update icon by theme
+      let icon = '☀️';
+      if (t === 'night') icon = '🌓';
+      else if (t === 'black') icon = '🌕';
+      themeIcon.textContent = icon;
       // Update active option
       if (themeOptions && themeOptions.length) {
         themeOptions.forEach(btn => {

@@ -212,11 +212,11 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
   color: #000000;
 }
 
-/* Theme toggle icon image */
+/* Theme toggle icon as text (emoji) */
 .theme-icon {
-  width: 20px;
-  height: 20px;
   display: inline-block;
+  font-size: 20px;
+  line-height: 1;
 }
 
 /* Theme selection dropdown menu */
@@ -244,6 +244,7 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.95rem;
+  font-weight: 600;
 }
 
 .theme-menu .theme-option:hover {
@@ -263,16 +264,20 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
   color: #ffffff;
 }
 [data-theme="light"] .theme-menu .theme-option:hover {
-  background: var(--button-outline-hover);
+  background: var(--button-primary-hover);
 }
-/* Keep active text white on light theme */
+/* Active option visibility on light theme */
 [data-theme="light"] .theme-menu .theme-option.active {
+  background: var(--button-primary);
   color: #ffffff;
+  outline-color: var(--button-primary);
 }
 
-/* Black theme: make active dropdown button text black */
+/* Black theme: keep active option readable */
 [data-theme="black"] .theme-menu .theme-option.active {
-  color: #000000;
+  color: #ffffff;
+  background: var(--bg-tertiary);
+  outline-color: #ffffff;
 }
 
 /* Smooth transitions for theme changes */
