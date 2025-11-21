@@ -10,7 +10,7 @@ function prettyLabel($s) {
 }
 ?>
 <div class="table-title">
-  <h2 style="margin: 0; font-size: 20px; font-weight: 700;">Tabela: <?php echo htmlspecialchars($table); ?></h2>
+  <h2 style="margin: 0; font-size: 20px; font-weight: 700;"><?php echo htmlspecialchars($table); ?></h2>
   <?php if (empty($isView) || $isView === false): ?>
   <a class="btn btn-primary" href="?controller=table&action=create&name=<?php echo urlencode($table); ?>">Novo Registro</a>
   <?php endif; ?>
@@ -22,7 +22,7 @@ function prettyLabel($s) {
       <?php foreach ($columns as $c): ?>
         <th><?php echo htmlspecialchars(prettyLabel($c)); ?></th>
       <?php endforeach; ?>
-      <th style="width:160px">Ações</th>
+      <th style="width:200px">Ações</th>
     </tr>
   </thead>
   <tbody>
@@ -67,6 +67,19 @@ function prettyLabel($s) {
   </tbody>
 </table>
 </div>
+<div class="table-bottom-scroll" id="tbs"><div class="spacer"></div></div>
+<script>
+const tw=document.querySelector('.table-wrapper');
+const tbs=document.getElementById('tbs');
+const sp=tbs?tbs.querySelector('.spacer'):null;
+function w(){ if(tw&&sp){ sp.style.width=tw.scrollWidth+'px'; } }
+function s(){ if(tw&&tbs){ tw.scrollLeft=tbs.scrollLeft; } }
+function r(){ if(tw&&tbs){ tbs.scrollLeft=tw.scrollLeft; } }
+window.addEventListener('resize',w);
+w();
+if(tbs){ tbs.addEventListener('scroll',s); }
+if(tw){ tw.addEventListener('scroll',r); }
+</script>
 <div class="pagination">
   <span>Página <?php echo $page; ?> de <?php echo $totalPages; ?>.</span>
   <?php if ($page > 1): ?>

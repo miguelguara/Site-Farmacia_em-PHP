@@ -140,8 +140,9 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
 
 /* Table */
 .table { width: 100%; border-collapse: collapse; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; transition: background-color 0.3s ease, border-color 0.3s ease; box-shadow: 0 1px 3px var(--shadow-light); table-layout: fixed; }
-.table th { background: var(--bg-tertiary); font-weight: 600; color: var(--text-primary); transition: background-color 0.3s ease; text-align: left; position: sticky; top: 0; z-index: 10; }
-.table th, .table td { border-bottom: 1px solid var(--border-color); padding: 12px 16px; transition: all 0.3s ease; word-break: break-word; overflow-wrap: anywhere; white-space: normal; }
+.table th { background: var(--bg-tertiary); font-weight: 600; color: var(--text-primary); transition: background-color 0.3s ease; text-align: left; }
+.table td { border-bottom: 1px solid var(--border-color); padding: 12px 16px; transition: all 0.3s ease; word-break: break-word; overflow-wrap: anywhere; white-space: normal; }
+.table th { border-bottom: 1px solid var(--border-color); padding: 12px 16px; transition: all 0.3s ease; white-space: nowrap; word-break: normal; overflow-wrap: normal; }
 .table td { color: var(--text-primary); vertical-align: middle; }
 .table tbody tr:last-child td { border-bottom: none; }
 .table tr:hover td { background: var(--table-hover); transition: background-color 0.3s ease; }
@@ -325,13 +326,14 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
   -webkit-overflow-scrolling: touch;
 }
 
-/* Table header improvements */
-.table thead {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: var(--bg-tertiary);
-}
+/* Overrides for full header labels and scrollbars */
+.table-wrapper { max-height: 80vh; overflow-y: auto; padding-bottom: 16px; }
+.table { table-layout: auto; width: max-content; min-width: 100%; }
+.table th { white-space: nowrap; word-break: normal; overflow-wrap: normal; }
+.table thead th { white-space: nowrap !important; word-break: keep-all !important; overflow-wrap: normal !important; hyphens: none !important; }
+
+/* Table header */
+.table thead { background: var(--bg-tertiary); }
 
 .table th {
   font-size: 13px;
@@ -367,7 +369,7 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
 }
 
 .table th {
-  font-size: 14px;
+  font-size: 15px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-right: 1px solid var(--border-color);
@@ -382,7 +384,7 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
 .table td {
   border-right: 1px solid var(--border-color);
   padding: 14px 16px;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .table td:last-child {
@@ -405,6 +407,9 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
   justify-content: flex-end;
   align-items: center;
 }
+
+.table td.actions { min-width: 200px; }
+.table .actions { flex-wrap: wrap; }
 
 .table .actions .btn {
   padding: 6px 10px;
@@ -437,3 +442,5 @@ body { margin: 0; font-family: Inter, system-ui, Arial, sans-serif; color: var(-
     gap: 8px;
   }
 }
+.table-bottom-scroll { width: 100%; overflow-x: auto; border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 12px 12px; background: var(--bg-secondary); margin-top: 6px; height: 18px; }
+.table-bottom-scroll .spacer { height: 1px; }
