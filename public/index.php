@@ -26,25 +26,27 @@ $loginStr = strtolower($_SESSION['user']['login'] ?? '');
 $hasFullAccess = (str_contains($loginStr, 'admin') || str_contains($loginStr, 'farma'));
 $hasDispOnly = (!$hasFullAccess && str_contains($loginStr, 'atendente'));
 
-if (!$hasFullAccess) {
-    if ($hasDispOnly) {
-        if ($controllerName === 'TableController') {
-            $name = strtolower($_GET['name'] ?? '');
-            if ($name !== 'dispensacoes') {
+if (isset($_SESSION['user'])) {
+    if (!$hasFullAccess) {
+        if ($hasDispOnly) {
+            if ($controllerName === 'TableController') {
+                $name = strtolower($_GET['name'] ?? '');
+                if ($name !== 'dispensacoes') {
+                    http_response_code(403);
+                    echo 'Acesso restrito: apenas Dispensações.';
+                    exit;
+                }
+            } else if (!in_array($controllerName, ['HomeController', 'AuthController', 'AboutController', 'ImgController'])) {
                 http_response_code(403);
                 echo 'Acesso restrito: apenas Dispensações.';
                 exit;
             }
-    } else if (!in_array($controllerName, ['HomeController', 'AuthController', 'AboutController', 'ImgController'])) {
-        http_response_code(403);
-        echo 'Acesso restrito: apenas Dispensações.';
-        exit;
-    }
-    } else {
-        // Usuários sem perfil conhecido: permitir apenas autenticação
-        if ($controllerName !== 'AuthController') {
-            header('Location: ?controller=auth&action=login');
-            exit;
+        } else {
+            if (!in_array($controllerName, ['HomeController', 'AuthController', 'AboutController', 'ImgController'])) {
+                http_response_code(403);
+                echo 'Acesso restrito.';
+                exit;
+            }
         }
     }
 }
